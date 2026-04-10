@@ -12,6 +12,10 @@ export default defineNuxtConfig({
 
   css: ['~/assets/css/main.css'],
 
+  ui: {
+    colorMode: false
+  },
+
   runtimeConfig: {
     public: {
       pocketbaseUrl: process.env.POCKETBASE_URL || 'http://127.0.0.1:8090'
