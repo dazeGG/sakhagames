@@ -2,7 +2,7 @@
   <div class="min-h-screen bg-gray-50 py-8">
     <div class="max-w-5xl mx-auto px-4">
       <div class="mb-10">
-        <h1 class="text-4xl font-bold">
+        <h1 class="text-6xl font-bold text-highlighted">
           Атлеты
         </h1>
       </div>
@@ -24,7 +24,7 @@
             </div>
 
             <div class="flex-1 min-w-0">
-              <h3 class="font-heading text-xl font-semibold text-gray-900">
+              <h3 class="font-heading text-xl font-semibold text-highlighted">
                 {{ athlete.fullName_ru }}
               </h3>
 
@@ -66,23 +66,23 @@
 </template>
 
 <script setup lang="ts">
-import type { Athlete } from '~/types/athlete'
+import type { Athlete } from "~/types/athlete"
 
 const { getAthletes } = usePocketBase()
 
 const { data: athletes = [] } = await useAsyncData<Athlete[]>(
-  'athletes-list',
+  "athletes-list",
   () => getAthletes(),
-  { default: () => [] }
+  { default: () => [] },
 )
 
 // ====================== Утилиты ======================
 const formatBirthDate = (dateString: string): string => {
   const date = new Date(dateString)
-  return date.toLocaleDateString('ru-RU', {
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric'
+  return date.toLocaleDateString("ru-RU", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
   })
 }
 
