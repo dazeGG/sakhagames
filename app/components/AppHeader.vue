@@ -12,7 +12,7 @@ const navItems = [
 <template>
   <UHeader toggle-side="left">
     <template #title>
-      SakhaGames
+      <span class="font-heading">SakhaGames</span>
     </template>
 
     <template #body>
