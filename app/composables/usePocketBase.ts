@@ -1,20 +1,20 @@
-import type { Athlete, AthletesList } from '~/types/athlete'
+import type { Athlete, AthletesList } from "~/types/athlete"
 
 export const usePocketBase = () => {
   const { $pb } = useNuxtApp()
 
   const getAthletes = async (): Promise<AthletesList> => {
-    return await $pb.collection('athletes').getFullList({
-      sort: '-created',
-      filter: 'isActive = true'
+    return await $pb.collection("athletes").getFullList({
+      sort: "-created",
+      filter: "isActive = true",
     })
   }
 
   const getAthleteById = async (id: string): Promise<Athlete | null> => {
     try {
-      return await $pb.collection('athletes').getOne(id)
+      return await $pb.collection("athletes").getOne(id)
     } catch (err) {
-      console.error('Ошибка получения атлета:', err)
+      console.error("Ошибка получения атлета:", err)
       return null
     }
   }
@@ -22,6 +22,6 @@ export const usePocketBase = () => {
   return {
     pb: $pb,
     getAthletes,
-    getAthleteById
+    getAthleteById,
   }
 }

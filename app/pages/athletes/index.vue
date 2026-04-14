@@ -66,23 +66,23 @@
 </template>
 
 <script setup lang="ts">
-import type { Athlete } from '~/types/athlete'
+import type { Athlete } from "~/types/athlete"
 
 const { getAthletes } = usePocketBase()
 
 const { data: athletes = [] } = await useAsyncData<Athlete[]>(
-  'athletes-list',
+  "athletes-list",
   () => getAthletes(),
-  { default: () => [] }
+  { default: () => [] },
 )
 
 // ====================== Утилиты ======================
 const formatBirthDate = (dateString: string): string => {
   const date = new Date(dateString)
-  return date.toLocaleDateString('ru-RU', {
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric'
+  return date.toLocaleDateString("ru-RU", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
   })
 }
 
