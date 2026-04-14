@@ -20,12 +20,12 @@ Style: "The Arctic Curator" — strict, monochromatic, high-contrast editorial a
 - **Colors**: Use ONLY the custom tokens defined in `main.css` (@theme block).
   Primary color is `primary-500` (#000000). Accents only for status tags and sport types.
 - **UI Kit**: Strictly Nuxt UI v4 + Tabler icons. Always prefer Nuxt UI components over raw divs or Tailwind primitives.
-- **Mobile-first**: All new components and pages must be designed mobile-first.
+- **Mobile-only**: The site is built exclusively for mobile devices. No desktop layout needed.
 
 ## Architecture
 
 - Nuxt 4.4.2 + Nuxt UI 4.6.1 + Tailwind 4 (customization only via `@theme` in `main.css` — no `tailwind.config.ts`).
-- Future i18n support: Russian (primary) → Yakut → English.
+- UI language: Russian only for now. i18n is planned for the future (Yakut → English).
 
 ## Project Commands
 
