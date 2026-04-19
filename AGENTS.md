@@ -1,6 +1,6 @@
-# CLAUDE.md — SakhaGames
+# AGENTS.md — SakhaGames
 
-**Project:** SakhaGames is a premium mobile-first editorial archive for Yakutian sports games (primarily Dygyn and future local competitions).  
+**Project:** SakhaGames is a premium mobile-first editorial archive for Yakutian sports games (primarily Dygyn and future local competitions).
 Style: "The Arctic Curator" — strict, monochromatic, high-contrast editorial archive resembling a heavy printed album.
 
 **Highest priority:** Always follow DESIGN.md (Arctic Curator). Read it before starting any UI, component or page work.
@@ -64,5 +64,4 @@ Primary button example: `bg-primary-500`
 3. Always use the `usePocketBase` composable for data operations.
 4. Keep the visual language strict, calm, editorial and consistent with "The Arctic Curator".
 5. If unsure about any design or architecture decision — ask instead of assuming.
-
-This file is automatically loaded in every Claude Code session. Follow these rules strictly to maintain the premium archival style.
+6. After making changes, always run `pnpm lint` and `pnpm typecheck` and fix all errors before finishing.
