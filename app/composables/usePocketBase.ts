@@ -6,7 +6,6 @@ export const usePocketBase = () => {
   const getAthletes = async (): Promise<AthletesList> => {
     return await $pb.collection("athletes").getFullList({
       sort: "-created",
-      filter: "isActive = true",
     })
   }
 
