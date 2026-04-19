@@ -20,7 +20,7 @@ Style: "The Arctic Curator" — strict, monochromatic, high-contrast editorial a
   - Body text and content: Noto Sans (`--font-sans`)
 - **Colors**: Use ONLY the custom tokens defined in `main.css` (@theme block).
   Primary color is `primary-500` (#000000). Accents only for status tags and sport types.
-- **UI Kit**: Strictly Nuxt UI v4 + Tabler icons. Always prefer Nuxt UI components over raw divs or Tailwind primitives.
+- **UI Kit**: Strictly Nuxt UI v4 + Tabler icons. **Always reach for a Nuxt UI component first.** Only write raw HTML elements (`div`, `span`, `button`, `input`, etc.) when no suitable Nuxt UI component exists. When in doubt, check the Nuxt UI v4 component list before writing custom markup.
 - **Mobile-only**: The site is built exclusively for mobile devices. No desktop layout needed.
 
 ## Architecture
