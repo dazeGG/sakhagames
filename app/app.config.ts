@@ -10,6 +10,30 @@ export default defineAppConfig({
       neutral: "neutral",
     },
 
+    button: {
+      variants: {
+        size: {
+          xs: { base: "px-3 py-2 text-xs gap-1" },
+          sm: { base: "px-3.5 py-2.5 text-xs gap-1.5" },
+          md: { base: "px-4 py-3 text-sm gap-1.5" },
+          lg: { base: "px-4.5 py-3 text-sm gap-2" },
+          xl: { base: "px-5 py-3.5 text-base gap-2" },
+        },
+      },
+    },
+
+    input: {
+      variants: {
+        size: {
+          xs: { base: "px-3 py-2 text-sm/4 gap-1", leading: "ps-3", trailing: "pe-3" },
+          sm: { base: "px-3.5 py-2.5 text-sm/4 gap-1.5", leading: "ps-3.5", trailing: "pe-3.5" },
+          md: { base: "px-4 py-3 text-base/5 gap-1.5", leading: "ps-4", trailing: "pe-4" },
+          lg: { base: "px-4.5 py-3 text-base/5 gap-2", leading: "ps-4.5", trailing: "pe-4.5" },
+          xl: { base: "px-5 py-3.5 text-base gap-2", leading: "ps-5", trailing: "pe-5" },
+        },
+      },
+    },
+
     icons: {
       arrowDown: "i-tabler-arrow-down",
       arrowLeft: "i-tabler-arrow-left",
