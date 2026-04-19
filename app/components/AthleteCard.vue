@@ -22,10 +22,20 @@ function truncate(text: string, length: number): string {
     <div class="relative">
       <div class="aspect-[1] flex overflow-hidden bg-neutral-800">
         <img
+          v-if="props.athlete.photo"
           :src="getPhotoUrl(props.athlete)"
           :alt="props.athlete.fullName_ru"
           class="w-full h-full object-cover"
         >
+        <div
+          v-else
+          class="w-full h-full grid place-items-center text-white/50"
+        >
+          <UIcon
+            name="i-tabler-user"
+            class="size-16"
+          />
+        </div>
         <div class="absolute flex right-1 bottom-1">
           <span class="font-mono text-[0.75rem] tracking-[0.05rem] text-white/35 uppercase">[ портрет ]</span>
         </div>
