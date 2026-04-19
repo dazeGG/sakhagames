@@ -13,6 +13,7 @@ Style: "The Arctic Curator" — strict, monochromatic, high-contrast editorial a
   Section spacing must use only Tailwind tokens: `spacing-20` (5rem), `spacing-30` (7.5rem), `spacing-40` (10rem).
 - **Hover states**: Strong color inversion (black ↔ white).
 - **Transitions**: Only `150ms linear`.
+- **Units**: All sizes (font-size, letter-spacing, padding, margin, etc.) must use `rem`. Never use `px` or `em` in Tailwind arbitrary values or inline styles.
 - **Typography**:
   - h1 / Display: PT Serif (`--font-serif-classic`)
   - Headings, metadata, navigation, uppercase: Montserrat (`--font-heading`)
