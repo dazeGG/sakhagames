@@ -24,6 +24,7 @@ Style: "The Arctic Curator" — strict, monochromatic, high-contrast editorial a
 - **UI Kit**: Strictly Nuxt UI v4 + Tabler icons. **Always reach for a Nuxt UI component first.** Only write raw HTML elements (`div`, `span`, `button`, `input`, etc.) when no suitable Nuxt UI component exists. When in doubt, check the Nuxt UI v4 component list before writing custom markup.
 - **Mobile-only**: The site is built exclusively for mobile devices. No desktop layout needed.
 - **Arrow functions only**: All functions in `<script setup>` blocks and composables must be written as `const fn = () => {}`. Never use the `function` keyword.
+- **Lint compliance**: All code must strictly follow ESLint rules. Run `pnpm lint` after any changes and fix every error before finishing.
 
 ## Architecture
 
