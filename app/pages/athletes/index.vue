@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { Athlete } from "~/types/athlete"
 
-const { getAthletes } = usePocketBase()
+const { athletes: athletesApi } = useApi()
 
 const PER_PAGE = 5
 const currentPage = ref(1)
@@ -19,7 +19,7 @@ watch(search, (val) => {
 
 const { data, refresh } = await useAsyncData(
   "athletes-list",
-  () => getAthletes(currentPage.value, PER_PAGE, debouncedSearch.value),
+  () => athletesApi.getList(currentPage.value, PER_PAGE, debouncedSearch.value),
   { default: () => ({ items: [] as Athlete[], totalItems: 0, totalPages: 1 }) },
 )
 
