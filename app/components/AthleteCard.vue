@@ -41,9 +41,10 @@ const achievements = computed(() => props.athlete.achievements?.slice(0, 2) ?? [
 
     <!-- Info -->
     <div class="p-5">
-      <div class="font-heading text-[0.5625rem] tracking-[0.075rem] font-semibold text-neutral-600 uppercase mb-2.5">
-        {{ props.athlete.isActive ? 'АКТИВНЫЙ' : 'ВЕТЕРАН' }}
-      </div>
+      <AthleteStatusBadge
+        :is-active="props.athlete.isActive"
+        class="mb-2.5"
+      />
       <h3 class="font-serif-classic text-2xl leading-[1.05] tracking-[-0.01rem] font-bold text-neutral-900 mb-3.5 mt-0">
         {{ props.athlete.name_ru }}
       </h3>
@@ -75,7 +76,7 @@ const achievements = computed(() => props.athlete.achievements?.slice(0, 2) ?? [
       :ui="{ base: 'justify-between px-5 py-[1.125rem]' }"
     >
       <span>В ПРОФИЛЬ</span>
-      <span class="font-sans">→</span>
+      <UIcon name="i-tabler-arrow-narrow-right" />
     </UButton>
   </div>
 </template>

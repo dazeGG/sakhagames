@@ -44,7 +44,7 @@ const metaRows = computed(() => {
         to="/athletes"
         color="neutral"
         variant="ghost"
-        leading-icon="i-tabler-arrow-left"
+        leading-icon="i-tabler-arrow-narrow-left"
         class="font-heading text-[0.625rem] tracking-[0.18rem] uppercase -ml-2"
       >
         Все спортсмены
@@ -69,9 +69,11 @@ const metaRows = computed(() => {
         />
       </div>
       <div class="absolute bottom-0 left-0 right-0 px-5 py-5 bg-linear-to-t from-black via-black/75 to-transparent">
-        <p class="font-heading text-[0.5rem] tracking-[0.2rem] font-semibold text-white/50 uppercase mb-2">
-          {{ athlete!.isActive ? 'Действующий спортсмен' : 'Ветеран' }}
-        </p>
+        <AthleteStatusBadge
+          :is-active="athlete!.isActive"
+          variant="dark"
+          class="mb-2"
+        />
         <h1 class="text-4xl leading-[0.95] font-bold text-white mb-0 mt-0">
           {{ athlete!.name_ru }}
         </h1>
@@ -155,19 +157,18 @@ const metaRows = computed(() => {
       <p class="font-heading text-[0.5rem] tracking-[0.2rem] font-semibold text-neutral-500 uppercase mb-5 px-5">
         Фотографии
       </p>
-      <div class="flex gap-1 overflow-x-auto px-5">
-        <div
-          v-for="(url, i) in photoUrls"
-          :key="i"
-          class="shrink-0 w-[75vw] aspect-square overflow-hidden bg-neutral-800"
-        >
+      <UCarousel
+        :items="photoUrls"
+        :ui="{ item: 'basis-auto ps-0 w-auto', container: 'px-5 gap-1' }"
+      >
+        <template #default="{ item, index }">
           <img
-            :src="url"
-            :alt="`${athlete!.name_ru} — фото ${i + 1}`"
-            class="w-full h-full object-cover"
+            :src="item"
+            :alt="`${athlete!.name_ru} — фото ${index + 1}`"
+            class="h-72 w-auto block"
           >
-        </div>
-      </div>
+        </template>
+      </UCarousel>
     </section>
   </div>
 </template>
