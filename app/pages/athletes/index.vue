@@ -2,46 +2,32 @@
 import type { Athlete } from "~/types/athlete"
 
 const { getAthletes } = usePocketBase()
-const { data: athletes } = await useAsyncData<Athlete[]>(
+
+const PER_PAGE = 5
+const currentPage = ref(1)
+const search = ref("")
+const debouncedSearch = ref("")
+
+let debounceTimer: ReturnType<typeof setTimeout>
+watch(search, (val) => {
+  clearTimeout(debounceTimer)
+  debounceTimer = setTimeout(() => {
+    debouncedSearch.value = val
+    currentPage.value = 1
+  }, 300)
+})
+
+const { data, refresh } = await useAsyncData(
   "athletes-list",
-  () => getAthletes(),
-  { default: () => [] as Athlete[] },
+  () => getAthletes(currentPage.value, PER_PAGE, debouncedSearch.value),
+  { default: () => ({ items: [] as Athlete[], totalItems: 0, totalPages: 1 }) },
 )
 
-const search = ref("")
-const activeFilter = ref("all")
-const currentPage = ref(1)
-const PER_PAGE = 5
+watch([currentPage, debouncedSearch], () => refresh())
 
-const allAthletes = computed(() => athletes.value ?? [])
-
-const pills = computed(() => [
-  { label: "ВСЕ", value: "all", count: allAthletes.value.length },
-  { label: "АКТИВНЫЕ", value: "active", count: allAthletes.value.filter(a => a.isActive).length },
-  { label: "ВЕТЕРАНЫ", value: "veteran", count: allAthletes.value.filter(a => !a.isActive).length },
-])
-
-const filteredAthletes = computed(() => {
-  let list = allAthletes.value
-  if (search.value) {
-    const q = search.value.toLowerCase()
-    list = list.filter(a => a.name_ru.toLowerCase().includes(q))
-  }
-  if (activeFilter.value === "active") list = list.filter(a => a.isActive)
-  if (activeFilter.value === "veteran") list = list.filter(a => !a.isActive)
-  return list
-})
-
-const totalPages = computed(() => Math.max(1, Math.ceil(filteredAthletes.value.length / PER_PAGE)))
-
-const paginatedAthletes = computed(() => {
-  const start = (currentPage.value - 1) * PER_PAGE
-  return filteredAthletes.value.slice(start, start + PER_PAGE)
-})
-
-watch([search, activeFilter], () => {
-  currentPage.value = 1
-})
+const athletes = computed(() => data.value?.items ?? [])
+const totalItems = computed(() => data.value?.totalItems ?? 0)
+const totalPages = computed(() => data.value?.totalPages ?? 1)
 </script>
 
 <template>
@@ -76,6 +62,8 @@ watch([search, activeFilter], () => {
           base: 'font-sans text-neutral-900 placeholder:text-neutral-500'
         }"
       />
+      <!-- TODO: раскомментировать когда на бэке будет готова фильтрация по isActive -->
+      <!--
       <div class="flex gap-1 overflow-x-auto">
         <UButton
           v-for="pill in pills"
@@ -89,19 +77,20 @@ watch([search, activeFilter], () => {
           <span class="text-[0.5625rem] opacity-50 font-mono font-normal ml-1.5">{{ pill.count }}</span>
         </UButton>
       </div>
+      -->
     </div>
 
     <!-- Athletes list -->
     <section class="px-5 py-7 grid gap-6">
       <AthleteCard
-        v-for="athlete in paginatedAthletes"
+        v-for="athlete in athletes"
         :key="athlete.id"
         :athlete="athlete"
       />
 
       <!-- Empty state -->
       <div
-        v-if="filteredAthletes.length === 0"
+        v-if="athletes.length === 0"
         class="py-20 text-center"
       >
         <p class="font-heading text-[0.6875rem] tracking-[0.2rem] font-semibold text-neutral-500 uppercase">
@@ -112,7 +101,7 @@ watch([search, activeFilter], () => {
 
     <!-- Pagination -->
     <div
-      v-if="filteredAthletes.length > PER_PAGE"
+      v-if="totalPages > 1"
       class="px-6 py-8 flex flex-col items-center gap-5 font-heading"
     >
       <div class="text-[0.625rem] tracking-[0.2rem] font-semibold text-neutral-600 uppercase">
@@ -120,7 +109,7 @@ watch([search, activeFilter], () => {
       </div>
       <UPagination
         v-model:page="currentPage"
-        :total="filteredAthletes.length"
+        :total="totalItems"
         :items-per-page="PER_PAGE"
         color="neutral"
         variant="ghost"
@@ -133,7 +122,7 @@ watch([search, activeFilter], () => {
         }"
       />
       <div class="text-[0.6875rem] text-neutral-600 tracking-[0.02rem] font-sans">
-        {{ paginatedAthletes.length }} из {{ filteredAthletes.length }} спортсменов
+        {{ athletes.length }} из {{ totalItems }} спортсменов
       </div>
     </div>
   </div>
