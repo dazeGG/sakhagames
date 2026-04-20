@@ -24,6 +24,7 @@ Style: "The Arctic Curator" — strict, monochromatic, high-contrast editorial a
 - **UI Kit**: Strictly Nuxt UI v4 + Tabler icons. **Always reach for a Nuxt UI component first.** Only write raw HTML elements (`div`, `span`, `button`, `input`, etc.) when no suitable Nuxt UI component exists. When in doubt, check the Nuxt UI v4 component list before writing custom markup.
 - **Mobile-only**: The site is built exclusively for mobile devices. No desktop layout needed.
 - **Arrow functions only**: All functions in `<script setup>` blocks and composables must be written as `const fn = () => {}`. Never use the `function` keyword.
+- **Lint compliance**: All code must strictly follow ESLint rules. Run `pnpm lint` after any changes and fix every error before finishing.
 
 ## Architecture
 
@@ -68,5 +69,6 @@ Primary button example: `bg-primary-500`
 3. Always use the `useApi()` composable for data operations.
 4. Keep the visual language strict, calm, editorial and consistent with "The Arctic Curator".
 5. If unsure about any design or architecture decision — ask instead of assuming.
+6. After making changes, always run `pnpm lint` and `pnpm typecheck` and fix all errors before finishing.
 
 This file is automatically loaded in every Claude Code session. Follow these rules strictly to maintain the premium archival style.
