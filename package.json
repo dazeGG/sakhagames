@@ -15,6 +15,7 @@
     "@iconify-json/simple-icons": "^1.2.77",
     "@iconify-json/tabler": "^1.2.33",
     "@nuxt/ui": "^4.6.1",
+    "isomorphic-dompurify": "^3.9.0",
     "nuxt": "^4.4.2",
     "pocketbase": "^0.26.8",
     "tailwindcss": "^4.2.2"

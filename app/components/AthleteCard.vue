@@ -14,7 +14,7 @@ const achievements = computed(() => props.athlete.achievements?.slice(0, 2) ?? [
 </script>
 
 <template>
-  <div class="bg-white flex flex-col">
+  <div class="bg-neutral-50 flex flex-col">
     <!-- Photo -->
     <div class="relative">
       <div class="aspect-[1] flex overflow-hidden bg-neutral-800">
@@ -22,6 +22,7 @@ const achievements = computed(() => props.athlete.achievements?.slice(0, 2) ?? [
           v-if="props.athlete.photo"
           :src="getPhotoUrl(props.athlete)"
           :alt="props.athlete.name"
+          loading="lazy"
           class="w-full h-full object-cover"
         >
         <div
