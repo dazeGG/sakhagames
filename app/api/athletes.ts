@@ -20,14 +20,6 @@ export const createAthletesApi = (pb: PocketBase) => ({
     }
   },
 
-  getById: async (id: string): Promise<Athlete | null> => {
-    try {
-      return await pb.collection("athletes").getOne<Athlete>(id)
-    } catch {
-      return null
-    }
-  },
-
   getBySlug: async (slug: string): Promise<Athlete | null> => {
     try {
       return await pb.collection("athletes").getFirstListItem<Athlete>(`slug = "${slug}"`)
