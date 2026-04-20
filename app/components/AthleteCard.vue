@@ -5,12 +5,12 @@ const props = defineProps<{ athlete: Athlete }>()
 
 const config = useRuntimeConfig()
 
-function getPhotoUrl(athlete: Athlete): string {
+const getPhotoUrl = (athlete: Athlete): string => {
   if (!athlete.photo) return ""
   return `${config.public.pocketbaseUrl}/api/files/athletes/${athlete.id}/${athlete.photo}`
 }
 
-function truncate(text: string, length: number): string {
+const truncate = (text: string, length: number): string => {
   if (text.length <= length) return text
   return `${text.slice(0, length)}…`
 }
@@ -24,7 +24,7 @@ function truncate(text: string, length: number): string {
         <img
           v-if="props.athlete.photo"
           :src="getPhotoUrl(props.athlete)"
-          :alt="props.athlete.fullName_ru"
+          :alt="props.athlete.name_ru"
           class="w-full h-full object-cover"
         >
         <div
@@ -33,22 +33,22 @@ function truncate(text: string, length: number): string {
         >
           <UIcon
             name="i-tabler-user"
-            class="size-16"
+            class="size-24"
           />
         </div>
         <div class="absolute flex right-1 bottom-1">
-          <span class="font-mono text-[0.75rem] tracking-[0.05rem] text-white/35 uppercase">[ портрет ]</span>
+          <span class="font-mono text-[0.65rem] tracking-[0.075rem] text-white/35 uppercase">[ портрет ]</span>
         </div>
       </div>
     </div>
 
     <!-- Info -->
-    <div class="p-5 pb-0">
+    <div class="p-5">
       <div class="font-heading text-[0.5625rem] tracking-[0.2rem] font-semibold text-neutral-600 uppercase mb-2.5">
         {{ props.athlete.isActive ? 'АКТИВНЫЙ' : 'ВЕТЕРАН' }}
       </div>
       <h3 class="font-serif-classic text-2xl leading-[1.05] tracking-[-0.01rem] font-bold text-neutral-900 mb-3.5 mt-0 uppercase">
-        {{ props.athlete.fullName_ru }}
+        {{ props.athlete.name_ru }}
       </h3>
       <p
         v-if="props.athlete.bio_ru"
@@ -60,11 +60,11 @@ function truncate(text: string, length: number): string {
 
     <!-- CTA -->
     <UButton
-      :to="`/athletes/${props.athlete.id}`"
+      :to="`/athletes/${props.athlete.slug}`"
       color="neutral"
       variant="solid"
       block
-      class="mt-5 font-heading text-[0.6875rem] tracking-[0.18rem] uppercase"
+      class="font-heading text-[0.6875rem] tracking-[0.18rem] uppercase"
       :ui="{ base: 'justify-between px-5 py-[1.125rem]' }"
     >
       <span>В ПРОФИЛЬ</span>

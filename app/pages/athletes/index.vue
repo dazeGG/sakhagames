@@ -1,3 +1,49 @@
+<script setup lang="ts">
+import type { Athlete } from "~/types/athlete"
+
+const { getAthletes } = usePocketBase()
+const { data: athletes } = await useAsyncData<Athlete[]>(
+  "athletes-list",
+  () => getAthletes(),
+  { default: () => [] as Athlete[] },
+)
+
+const search = ref("")
+const activeFilter = ref("all")
+const currentPage = ref(1)
+const PER_PAGE = 5
+
+const allAthletes = computed(() => athletes.value ?? [])
+
+const pills = computed(() => [
+  { label: "ВСЕ", value: "all", count: allAthletes.value.length },
+  { label: "АКТИВНЫЕ", value: "active", count: allAthletes.value.filter(a => a.isActive).length },
+  { label: "ВЕТЕРАНЫ", value: "veteran", count: allAthletes.value.filter(a => !a.isActive).length },
+])
+
+const filteredAthletes = computed(() => {
+  let list = allAthletes.value
+  if (search.value) {
+    const q = search.value.toLowerCase()
+    list = list.filter(a => a.name_ru.toLowerCase().includes(q))
+  }
+  if (activeFilter.value === "active") list = list.filter(a => a.isActive)
+  if (activeFilter.value === "veteran") list = list.filter(a => !a.isActive)
+  return list
+})
+
+const totalPages = computed(() => Math.max(1, Math.ceil(filteredAthletes.value.length / PER_PAGE)))
+
+const paginatedAthletes = computed(() => {
+  const start = (currentPage.value - 1) * PER_PAGE
+  return filteredAthletes.value.slice(start, start + PER_PAGE)
+})
+
+watch([search, activeFilter], () => {
+  currentPage.value = 1
+})
+</script>
+
 <template>
   <div class="bg-neutral-50 min-h-screen">
     <!-- Hero -->
@@ -92,49 +138,3 @@
     </div>
   </div>
 </template>
-
-<script setup lang="ts">
-import type { Athlete } from "~/types/athlete"
-
-const { getAthletes } = usePocketBase()
-const { data: athletes } = await useAsyncData<Athlete[]>(
-  "athletes-list",
-  () => getAthletes(),
-  { default: () => [] as Athlete[] },
-)
-
-const search = ref("")
-const activeFilter = ref("all")
-const currentPage = ref(1)
-const PER_PAGE = 5
-
-const allAthletes = computed(() => athletes.value ?? [])
-
-const pills = computed(() => [
-  { label: "ВСЕ", value: "all", count: allAthletes.value.length },
-  { label: "АКТИВНЫЕ", value: "active", count: allAthletes.value.filter(a => a.isActive).length },
-  { label: "ВЕТЕРАНЫ", value: "veteran", count: allAthletes.value.filter(a => !a.isActive).length },
-])
-
-const filteredAthletes = computed(() => {
-  let list = allAthletes.value
-  if (search.value) {
-    const q = search.value.toLowerCase()
-    list = list.filter(a => a.fullName_ru.toLowerCase().includes(q))
-  }
-  if (activeFilter.value === "active") list = list.filter(a => a.isActive)
-  if (activeFilter.value === "veteran") list = list.filter(a => !a.isActive)
-  return list
-})
-
-const totalPages = computed(() => Math.max(1, Math.ceil(filteredAthletes.value.length / PER_PAGE)))
-
-const paginatedAthletes = computed(() => {
-  const start = (currentPage.value - 1) * PER_PAGE
-  return filteredAthletes.value.slice(start, start + PER_PAGE)
-})
-
-watch([search, activeFilter], () => {
-  currentPage.value = 1
-})
-</script>
