@@ -10,10 +10,7 @@ const getPhotoUrl = (athlete: Athlete): string => {
   return `${config.public.pocketbaseUrl}/api/files/athletes/${athlete.id}/${athlete.photo}`
 }
 
-const truncate = (text: string, length: number): string => {
-  if (text.length <= length) return text
-  return `${text.slice(0, length)}…`
-}
+const achievements = computed(() => props.athlete.achievements?.slice(0, 2) ?? [])
 </script>
 
 <template>
@@ -44,18 +41,28 @@ const truncate = (text: string, length: number): string => {
 
     <!-- Info -->
     <div class="p-5">
-      <div class="font-heading text-[0.5625rem] tracking-[0.2rem] font-semibold text-neutral-600 uppercase mb-2.5">
+      <div class="font-heading text-[0.5625rem] tracking-[0.075rem] font-semibold text-neutral-600 uppercase mb-2.5">
         {{ props.athlete.isActive ? 'АКТИВНЫЙ' : 'ВЕТЕРАН' }}
       </div>
-      <h3 class="font-serif-classic text-2xl leading-[1.05] tracking-[-0.01rem] font-bold text-neutral-900 mb-3.5 mt-0 uppercase">
+      <h3 class="font-serif-classic text-2xl leading-[1.05] tracking-[-0.01rem] font-bold text-neutral-900 mb-3.5 mt-0">
         {{ props.athlete.name_ru }}
       </h3>
-      <p
-        v-if="props.athlete.bio_ru"
-        class="font-sans text-[0.8125rem] text-neutral-900 leading-[1.45] m-0"
+      <ul
+        v-if="achievements.length"
+        class="m-0 p-0 grid gap-1.5 list-none"
       >
-        {{ truncate(props.athlete.bio_ru, 120) }}
-      </p>
+        <li
+          v-for="(item, i) in achievements"
+          :key="i"
+          class="font-sans text-[0.8125rem] text-neutral-900 leading-[1.45] flex gap-2 items-start"
+        >
+          <UIcon
+            :name="item.icon"
+            class="size-3.5 mt-[0.1rem] shrink-0"
+          />
+          <span>{{ item.text_ru }}</span>
+        </li>
+      </ul>
     </div>
 
     <!-- CTA -->
@@ -68,7 +75,7 @@ const truncate = (text: string, length: number): string => {
       :ui="{ base: 'justify-between px-5 py-[1.125rem]' }"
     >
       <span>В ПРОФИЛЬ</span>
-      <span>→</span>
+      <span class="font-sans">→</span>
     </UButton>
   </div>
 </template>

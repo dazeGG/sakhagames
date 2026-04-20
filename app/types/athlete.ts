@@ -1,15 +1,23 @@
+export interface AthleteAchievement {
+  icon: string
+  text_ru: string
+  text_sah: string
+  text_en: string
+}
+
+export type AthleteAchievements = AthleteAchievement[]
+
 export interface Athlete {
   id: string
   slug: string
 
-  created: string
-  updated: string
+  isActive: boolean
+
+  birthDate: string
 
   name_ru: string
   name_sah: string
   name_en: string
-
-  birthDate: string
 
   birthPlace_ru: string
   birthPlace_sah: string
@@ -23,14 +31,21 @@ export interface Athlete {
   club_sah: string
   club_en: string
 
+  title_ru: string
+  title_sah: string
+  title_en: string
+
   bio_ru: string
   bio_sah: string
   bio_en: string
 
+  achievements: AthleteAchievements
+
   photo: string
   photos: string[]
 
-  isActive: boolean
+  created: string
+  updated: string
 }
 
 export type AthletesList = Athlete[]
