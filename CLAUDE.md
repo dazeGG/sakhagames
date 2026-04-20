@@ -5,6 +5,8 @@ Style: "The Arctic Curator" — strict, monochromatic, high-contrast editorial a
 
 **Highest priority:** Always follow DESIGN.md (Arctic Curator). Read it before starting any UI, component or page work.
 
+**File sync rule:** CLAUDE.md and AGENTS.md must always be kept in sync. Any change to one file must be mirrored in the other.
+
 ## Hard Rules (NEVER break these)
 
 - **Zero radius**: Every element (cards, buttons, modals, images, containers, inputs) MUST have `border-radius: 0`.
@@ -42,7 +44,8 @@ pnpm typecheck    # TypeScript check (nuxt typecheck)
 
 - PocketBase is the only backend.
 - PocketBase client is initialized in `app/plugins/pocketbase.ts` and injected globally as `$pb`.
-- All data fetching must go through the typed composable: `app/composables/usePocketBase.ts`
+- All data fetching must go through `useApi()` composable (`app/composables/useApi.ts`), which exposes semantic modules: `api.athletes`, `api.games`, etc.
+- API modules live in `app/api/` — each module is a pure factory `createXxxApi(pb)`. Add new collections there.
 - Use the provided methods from the composable (e.g. `getGames()`, `getGameBySlug()`, `getAthletes()`, `getAthleteById()` etc.).
 - Type definitions for collections are located in `app/types/` (e.g. `athlete.ts`, `game.ts`).
 - Environment variable: `POCKETBASE_URL`
@@ -62,7 +65,7 @@ Primary button example: `bg-primary-500`
 
 1. Before any UI or component work — re-read DESIGN.md completely.
 2. Plan structure first, then implement.
-3. Always use the `usePocketBase` composable for data operations.
+3. Always use the `useApi()` composable for data operations.
 4. Keep the visual language strict, calm, editorial and consistent with "The Arctic Curator".
 5. If unsure about any design or architecture decision — ask instead of assuming.
 
