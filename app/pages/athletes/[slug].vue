@@ -12,7 +12,7 @@ if (!athlete.value) {
   throw createError({ statusCode: 404, message: "Спортсмен не найден" })
 }
 
-useSeoMeta({ title: () => athlete.value?.name_ru ?? "" })
+useSeoMeta({ title: () => athlete.value?.name ?? "" })
 
 const getFileUrl = (filename: string) =>
   `${config.public.pocketbaseUrl}/api/files/athletes/${athlete.value!.id}/${filename}`
@@ -29,9 +29,9 @@ const metaRows = computed(() => {
   const a = athlete.value!
   return [
     { label: "Год рождения", value: birthYear.value },
-    { label: "Место рождения", value: a.birthPlace_ru },
-    { label: "Регион", value: a.region_ru },
-    { label: "Клуб", value: a.club_ru },
+    { label: "Место рождения", value: a.birthPlace },
+    { label: "Регион", value: a.region },
+    { label: "Клуб", value: a.club },
   ].filter(r => r.value)
 })
 </script>
@@ -56,7 +56,7 @@ const metaRows = computed(() => {
       <img
         v-if="photoUrl"
         :src="photoUrl"
-        :alt="athlete!.name_ru"
+        :alt="athlete!.name"
         class="w-full h-full object-cover"
       >
       <div
@@ -75,18 +75,18 @@ const metaRows = computed(() => {
           class="mb-2"
         />
         <h1 class="text-4xl leading-[0.95] font-bold text-white mb-0 mt-0">
-          {{ athlete!.name_ru }}
+          {{ athlete!.name }}
         </h1>
       </div>
     </div>
 
     <!-- Title / rank -->
     <div
-      v-if="athlete!.title_ru"
+      v-if="athlete!.title"
       class="bg-primary-500 px-5 py-4"
     >
       <p class="font-heading text-[0.6875rem] tracking-[0.12rem] font-semibold text-white uppercase">
-        {{ athlete!.title_ru }}
+        {{ athlete!.title }}
       </p>
     </div>
 
@@ -112,7 +112,7 @@ const metaRows = computed(() => {
 
     <!-- Bio -->
     <section
-      v-if="athlete!.bio_ru"
+      v-if="athlete!.bio"
       class="bg-neutral-100 px-5 py-8"
     >
       <p class="font-heading text-[0.5rem] tracking-[0.2rem] font-semibold text-neutral-500 uppercase mb-5">
@@ -120,7 +120,7 @@ const metaRows = computed(() => {
       </p>
       <div
         class="font-sans text-[0.9375rem] leading-[1.75] text-neutral-900 [&>p]:mb-4 [&>p:last-child]:mb-0"
-        v-html="athlete!.bio_ru"
+        v-html="athlete!.bio"
       />
     </section>
 
@@ -143,7 +143,7 @@ const metaRows = computed(() => {
             class="size-4 mt-[0.15rem] shrink-0 text-neutral-900"
           />
           <span class="font-sans text-[0.9375rem] leading-normal text-neutral-900">
-            {{ item.text_ru }}
+            {{ item.text }}
           </span>
         </li>
       </ul>
@@ -164,7 +164,7 @@ const metaRows = computed(() => {
         <template #default="{ item, index }">
           <img
             :src="item"
-            :alt="`${athlete!.name_ru} — фото ${index + 1}`"
+            :alt="`${athlete!.name} — фото ${index + 1}`"
             class="h-72 w-auto block"
           >
         </template>
