@@ -6,12 +6,12 @@
     <h1 class="text-5xl leading-[0.95] font-bold text-neutral-900 mb-6 mt-0">
       SakhaGames
     </h1>
-    <div class="grid gap-4 text-base leading-7 text-neutral-900">
+    <div class="grid gap-4 font-sans text-base leading-7 text-neutral-900">
       <p>
-        Фронтенд проекта написан на Nuxt и подключается к PocketBase через публичный runtime config.
+        SakhaGames — кураторский архив традиционного якутского многоборья. Здесь собраны профили спортсменов, история Игр Дыгына и описание дисциплин.
       </p>
       <p>
-        Сейчас базовая структура готова для страниц спортсменов, архива игр, правил и дальнейших разделов.
+        Проект создан для сохранения и популяризации уникального культурного наследия Республики Саха.
       </p>
     </div>
   </main>

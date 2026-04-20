@@ -8,10 +8,10 @@ const currentPage = ref(1)
 const search = ref("")
 const debouncedSearch = ref("")
 
-let debounceTimer: ReturnType<typeof setTimeout>
+const debounceTimer = ref<ReturnType<typeof setTimeout> | null>(null)
 watch(search, (val) => {
-  clearTimeout(debounceTimer)
-  debounceTimer = setTimeout(() => {
+  if (debounceTimer.value) clearTimeout(debounceTimer.value)
+  debounceTimer.value = setTimeout(() => {
     debouncedSearch.value = val
     currentPage.value = 1
   }, 300)
@@ -56,28 +56,12 @@ const totalPages = computed(() => data.value?.totalPages ?? 1)
         variant="none"
         size="md"
         fixed
-        class="w-full bg-white"
+        class="w-full bg-neutral-50"
         :ui="{
           leadingIcon: 'text-neutral-600',
           base: 'font-sans text-neutral-900 placeholder:text-neutral-500'
         }"
       />
-      <!-- TODO: раскомментировать когда на бэке будет готова фильтрация по isActive -->
-      <!--
-      <div class="flex gap-1 overflow-x-auto">
-        <UButton
-          v-for="pill in pills"
-          :key="pill.value"
-          color="neutral"
-          :variant="activeFilter === pill.value ? 'solid' : 'ghost'"
-          class="font-heading text-[0.625rem] tracking-[0.14rem] font-semibold whitespace-nowrap"
-          @click="activeFilter = pill.value"
-        >
-          {{ pill.label }}
-          <span class="text-[0.5625rem] opacity-50 font-mono font-normal ml-1.5">{{ pill.count }}</span>
-        </UButton>
-      </div>
-      -->
     </div>
 
     <!-- Athletes list -->
@@ -118,7 +102,7 @@ const totalPages = computed(() => data.value?.totalPages ?? 1)
         :show-edges="false"
         size="sm"
         :ui="{
-          item: 'font-mono text-[0.8125rem] min-w-9'
+          item: 'font-heading text-[0.8125rem] min-w-9'
         }"
       />
       <div class="text-[0.6875rem] text-neutral-600 tracking-[0.02rem] font-sans">
