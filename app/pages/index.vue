@@ -1,76 +1,74 @@
 <template>
-  <div>
-    <UPageHero
-      title="Nuxt Starter Template"
-      description="A production-ready starter template powered by Nuxt UI. Build beautiful, accessible, and performant applications in minutes, not hours."
-      :links="[{
-        label: 'Get started',
-        to: 'https://ui.nuxt.com/docs/getting-started/installation/nuxt',
-        target: '_blank',
-        trailingIcon: 'i-lucide-arrow-right',
-        size: 'xl'
-      }, {
-        label: 'Use this template',
-        to: 'https://github.com/nuxt-ui-templates/starter',
-        target: '_blank',
-        icon: 'i-simple-icons-github',
-        size: 'xl',
-        color: 'neutral',
-        variant: 'subtle'
-      }]"
-    />
+  <main class="bg-neutral-50 min-h-screen">
+    <!-- Hero -->
+    <section class="px-5 pt-12 pb-10">
+      <p class="font-heading text-[0.625rem] tracking-[0.2rem] font-semibold text-neutral-600 uppercase mb-6">
+        Республика Саха
+      </p>
+      <h1 class="text-5xl leading-[0.95] font-bold text-neutral-900 mb-6 mt-0">
+        SakhaGames
+      </h1>
+      <p class="font-sans text-base leading-7 text-neutral-900">
+        Архив спортсменов, игр и правил традиционного многоборья Якутии.
+      </p>
+      <div class="flex flex-wrap gap-3 mt-8">
+        <UButton
+          to="/athletes"
+          color="neutral"
+          trailing-icon="i-tabler-arrow-right"
+        >
+          Спортсмены
+        </UButton>
+        <UButton
+          to="/about"
+          color="neutral"
+          variant="ghost"
+        >
+          О проекте
+        </UButton>
+      </div>
+    </section>
 
-    <UPageSection
-      id="features"
-      title="Everything you need to build modern Nuxt apps"
-      description="Start with a solid foundation. This template includes all the essentials for building production-ready applications with Nuxt UI's powerful component system."
-      :features="[{
-        icon: 'i-lucide-rocket',
-        title: 'Production-ready from day one',
-        description: 'Pre-configured with TypeScript, ESLint, Tailwind CSS, and all the best practices. Focus on building features, not setting up tooling.'
-      }, {
-        icon: 'i-lucide-palette',
-        title: 'Beautiful by default',
-        description: 'Leveraging Nuxt UI\'s design system with automatic dark mode, consistent spacing, and polished components that look great out of the box.'
-      }, {
-        icon: 'i-lucide-zap',
-        title: 'Lightning fast',
-        description: 'Optimized for performance with SSR/SSG support, automatic code splitting, and edge-ready deployment. Your users will love the speed.'
-      }, {
-        icon: 'i-lucide-blocks',
-        title: '100+ components included',
-        description: 'Access Nuxt UI\'s comprehensive component library. From forms to navigation, everything is accessible, responsive, and customizable.'
-      }, {
-        icon: 'i-lucide-code-2',
-        title: 'Developer experience first',
-        description: 'Auto-imports, hot module replacement, and TypeScript support. Write less boilerplate and ship more features.'
-      }, {
-        icon: 'i-lucide-shield-check',
-        title: 'Built for scale',
-        description: 'Enterprise-ready architecture with proper error handling, SEO optimization, and security best practices built-in.'
-      }]"
-    />
-
-    <UPageSection>
-      <UPageCTA
-        title="Ready to build your next Nuxt app?"
-        description="Join thousands of developers building with Nuxt and Nuxt UI. Get this template and start shipping today."
-        variant="subtle"
-        :links="[{
-          label: 'Start building',
-          to: 'https://ui.nuxt.com/docs/getting-started/installation/nuxt',
-          target: '_blank',
-          trailingIcon: 'i-lucide-arrow-right',
-          color: 'neutral'
-        }, {
-          label: 'View on GitHub',
-          to: 'https://github.com/nuxt-ui-templates/starter',
-          target: '_blank',
-          icon: 'i-simple-icons-github',
-          color: 'neutral',
-          variant: 'outline'
-        }]"
+    <!-- Sections -->
+    <section class="bg-neutral-200 px-5 py-10 grid gap-4">
+      <UPageCard
+        v-for="item in sections"
+        :key="item.to"
+        :to="item.to"
+        :icon="item.icon"
+        :title="item.title"
+        :description="item.description"
+        variant="soft"
+        :ui="{
+          root: 'bg-white',
+          leadingIcon: 'text-neutral-900',
+          title: 'font-heading font-bold text-neutral-900',
+          description: 'font-sans text-neutral-900'
+        }"
       />
-    </UPageSection>
-  </div>
+    </section>
+  </main>
 </template>
+
+<script setup lang="ts">
+const sections = [
+  {
+    title: "Спортсмены",
+    description: "Профили участников и ветеранов традиционного многоборья.",
+    icon: "i-tabler-users",
+    to: "/athletes",
+  },
+  {
+    title: "Архив игр",
+    description: "Сезоны, результаты и места проведения Игр Дыгына.",
+    icon: "i-tabler-trophy",
+    to: "/games",
+  },
+  {
+    title: "Правила",
+    description: "Описание дисциплин и регламентов соревнований.",
+    icon: "i-tabler-book",
+    to: "/rules",
+  },
+]
+</script>
