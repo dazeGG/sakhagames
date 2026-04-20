@@ -1,8 +1,82 @@
 export default defineAppConfig({
   ui: {
     colors: {
-      primary: 'green',
-      neutral: 'slate'
-    }
-  }
+      primary: "primary",
+      secondary: "secondary",
+      success: "green",
+      info: "blue",
+      warning: "yellow",
+      error: "red",
+      neutral: "neutral",
+    },
+
+    button: {
+      variants: {
+        size: {
+          xs: { base: "px-3 py-2 text-xs gap-1" },
+          sm: { base: "px-3.5 py-2.5 text-xs gap-1.5" },
+          md: { base: "px-4 py-3 text-sm gap-1.5" },
+          lg: { base: "px-4.5 py-3 text-sm gap-2" },
+          xl: { base: "px-5 py-3.5 text-base gap-2" },
+        },
+      },
+    },
+
+    input: {
+      variants: {
+        size: {
+          xs: { base: "px-3 py-2 text-sm/4 gap-1", leading: "ps-3", trailing: "pe-3" },
+          sm: { base: "px-3.5 py-2.5 text-sm/4 gap-1.5", leading: "ps-3.5", trailing: "pe-3.5" },
+          md: { base: "px-4 py-3 text-base/5 gap-1.5", leading: "ps-4", trailing: "pe-4" },
+          lg: { base: "px-4.5 py-3 text-base/5 gap-2", leading: "ps-4.5", trailing: "pe-4.5" },
+          xl: { base: "px-5 py-3.5 text-base gap-2", leading: "ps-5", trailing: "pe-5" },
+        },
+      },
+    },
+
+    icons: {
+      arrowDown: "i-tabler-arrow-down",
+      arrowLeft: "i-tabler-arrow-left",
+      arrowRight: "i-tabler-arrow-right",
+      arrowUp: "i-tabler-arrow-up",
+      caution: "i-tabler-alert-circle",
+      check: "i-tabler-check",
+      chevronDoubleLeft: "i-tabler-chevrons-left",
+      chevronDoubleRight: "i-tabler-chevrons-right",
+      chevronDown: "i-tabler-chevron-down",
+      chevronLeft: "i-tabler-chevron-left",
+      chevronRight: "i-tabler-chevron-right",
+      chevronUp: "i-tabler-chevron-up",
+      close: "i-tabler-x",
+      copy: "i-tabler-copy",
+      copyCheck: "i-tabler-copy-check",
+      dark: "i-tabler-moon",
+      drag: "i-tabler-grip-vertical",
+      ellipsis: "i-tabler-dots",
+      error: "i-tabler-circle-x",
+      external: "i-tabler-external-link",
+      eye: "i-tabler-eye",
+      eyeOff: "i-tabler-eye-off",
+      file: "i-tabler-file",
+      folder: "i-tabler-folder",
+      folderOpen: "i-tabler-folder-open",
+      hash: "i-tabler-hash",
+      info: "i-tabler-info-circle",
+      light: "i-tabler-sun",
+      loading: "i-tabler-loader",
+      menu: "i-tabler-menu-2",
+      minus: "i-tabler-minus",
+      panelClose: "i-tabler-panel-left-close",
+      panelOpen: "i-tabler-panel-left-open",
+      plus: "i-tabler-plus",
+      reload: "i-tabler-refresh",
+      search: "i-tabler-search",
+      stop: "i-tabler-square",
+      success: "i-tabler-circle-check",
+      system: "i-tabler-device-desktop",
+      tip: "i-tabler-lightbulb",
+      upload: "i-tabler-upload",
+      warning: "i-tabler-alert-triangle",
+    },
+  },
 })
