@@ -30,22 +30,27 @@
     </section>
 
     <!-- Sections -->
-    <section class="bg-neutral-200 px-5 py-10 grid gap-4">
-      <UPageCard
-        v-for="item in sections"
+    <section class="bg-neutral-200">
+      <NuxtLink
+        v-for="(item, i) in sections"
         :key="item.to"
         :to="item.to"
-        :icon="item.icon"
-        :title="item.title"
-        :description="item.description"
-        variant="soft"
-        :ui="{
-          root: 'bg-white',
-          leadingIcon: 'text-neutral-900',
-          title: 'font-heading font-bold text-neutral-900',
-          description: 'font-sans text-neutral-900'
-        }"
-      />
+        class="flex items-center justify-between gap-4 px-5 py-7"
+        :class="i % 2 !== 0 ? 'bg-neutral-100' : ''"
+      >
+        <div>
+          <h3 class="font-heading font-bold text-[1rem] tracking-[0.01rem] text-neutral-900 mb-1.5 mt-0">
+            {{ item.title }}
+          </h3>
+          <p class="font-sans text-[0.8125rem] leading-[1.6] text-neutral-600 m-0">
+            {{ item.description }}
+          </p>
+        </div>
+        <UIcon
+          name="i-tabler-arrow-narrow-right"
+          class="size-4 text-neutral-400 shrink-0"
+        />
+      </NuxtLink>
     </section>
   </main>
 </template>
@@ -55,19 +60,16 @@ const sections = [
   {
     title: "Спортсмены",
     description: "Профили участников и ветеранов традиционного многоборья.",
-    icon: "i-tabler-users",
     to: "/athletes",
   },
   {
     title: "Архив игр",
     description: "Сезоны, результаты и места проведения Игр Дыгына.",
-    icon: "i-tabler-trophy",
     to: "/games",
   },
   {
     title: "Правила",
     description: "Описание дисциплин и регламентов соревнований.",
-    icon: "i-tabler-book",
     to: "/rules",
   },
 ]

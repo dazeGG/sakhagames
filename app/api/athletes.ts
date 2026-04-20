@@ -11,7 +11,7 @@ export const createAthletesApi = (pb: PocketBase) => ({
   getList: async (page = 1, perPage = 5, search = ""): Promise<AthletesPage> => {
     const result = await pb.collection("athletes").getList<Athlete>(page, perPage, {
       sort: "-created",
-      filter: search ? `name_ru ~ "${search}"` : "",
+      filter: search ? `name ~ "${search}"` : "",
     })
     return {
       items: result.items,

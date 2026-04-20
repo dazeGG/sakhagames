@@ -14,14 +14,15 @@ const achievements = computed(() => props.athlete.achievements?.slice(0, 2) ?? [
 </script>
 
 <template>
-  <div class="bg-white flex flex-col">
+  <div class="bg-neutral-50 flex flex-col">
     <!-- Photo -->
     <div class="relative">
       <div class="aspect-[1] flex overflow-hidden bg-neutral-800">
         <img
           v-if="props.athlete.photo"
           :src="getPhotoUrl(props.athlete)"
-          :alt="props.athlete.name_ru"
+          :alt="props.athlete.name"
+          loading="lazy"
           class="w-full h-full object-cover"
         >
         <div
@@ -46,7 +47,7 @@ const achievements = computed(() => props.athlete.achievements?.slice(0, 2) ?? [
         class="mb-2.5"
       />
       <h3 class="font-serif-classic text-2xl leading-[1.05] tracking-[-0.01rem] font-bold text-neutral-900 mb-3.5 mt-0">
-        {{ props.athlete.name_ru }}
+        {{ props.athlete.name }}
       </h3>
       <ul
         v-if="achievements.length"
@@ -61,7 +62,7 @@ const achievements = computed(() => props.athlete.achievements?.slice(0, 2) ?? [
             :name="item.icon"
             class="size-3.5 mt-[0.1rem] shrink-0"
           />
-          <span>{{ item.text_ru }}</span>
+          <span>{{ item.text }}</span>
         </li>
       </ul>
     </div>

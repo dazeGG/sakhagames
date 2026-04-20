@@ -3,9 +3,14 @@
 
 <template>
   <UApp>
+    <a
+      href="#main-content"
+      class="sr-only"
+    >Перейти к содержанию</a>
+
     <AppHeader />
 
-    <UMain>
+    <UMain id="main-content">
       <NuxtPage />
     </UMain>
 

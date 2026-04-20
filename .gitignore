@@ -18,6 +18,10 @@ logs
 .fleet
 .idea
 
+# Claude Code / agent skills (restored via skills-lock.json)
+.claude/skills/
+.agents/
+
 # Local env files
 .env
 .env.*
