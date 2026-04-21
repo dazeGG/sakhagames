@@ -1,4 +1,4 @@
-import type { RecordId, RecordDefault } from "~/types"
+import type { RecordId, RecordDefault, FileName } from "~/types"
 
 export type DygynGameStatus
   = | "completed"
@@ -31,12 +31,6 @@ export type SourceItem = {
   url?: string
   type?: string
   note?: string
-}
-
-export type MediaItem = {
-  title?: string
-  url?: string
-  type?: string
 }
 
 export interface Discipline extends RecordDefault {
@@ -92,7 +86,7 @@ export interface DygynGameEvent extends RecordDefault {
   rulesNote?: string
   recordNote?: string
   sources?: SourceItem[] | null
-  media?: MediaItem[] | null
+  media?: FileName[] | null
 }
 
 export interface DygynGameResult extends RecordDefault {
