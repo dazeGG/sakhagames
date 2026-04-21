@@ -1,5 +1,7 @@
 export type RecordId = string
 
+export type FileName = string
+
 export interface RecordTimestamps {
   created: string
   updated: string
