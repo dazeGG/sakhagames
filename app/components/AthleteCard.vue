@@ -3,12 +3,11 @@ import type { Athlete } from "~/types/athlete"
 
 const props = defineProps<{ athlete: Athlete }>()
 
-const config = useRuntimeConfig()
+const fileUrl = usePocketBaseFile()
 
-const getPhotoUrl = (athlete: Athlete): string => {
-  if (!athlete.photo) return ""
-  return `${config.public.pocketbaseUrl}/api/files/athletes/${athlete.id}/${athlete.photo}`
-}
+const photoUrl = computed(() =>
+  fileUrl("athletes", props.athlete.id, props.athlete.photo),
+)
 
 const achievements = computed(() => props.athlete.achievements?.slice(0, 2) ?? [])
 </script>
@@ -20,7 +19,7 @@ const achievements = computed(() => props.athlete.achievements?.slice(0, 2) ?? [
       <div class="aspect-[1] flex overflow-hidden bg-neutral-800">
         <img
           v-if="props.athlete.photo"
-          :src="getPhotoUrl(props.athlete)"
+          :src="photoUrl"
           :alt="props.athlete.name"
           loading="lazy"
           class="w-full h-full object-cover"
