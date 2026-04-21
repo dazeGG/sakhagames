@@ -6,16 +6,7 @@ const { athletes: athletesApi } = useApi()
 const PER_PAGE = 5
 const currentPage = ref(1)
 const search = ref("")
-const debouncedSearch = ref("")
-
-const debounceTimer = ref<ReturnType<typeof setTimeout> | null>(null)
-watch(search, (val) => {
-  if (debounceTimer.value) clearTimeout(debounceTimer.value)
-  debounceTimer.value = setTimeout(() => {
-    debouncedSearch.value = val
-    currentPage.value = 1
-  }, 300)
-})
+const debouncedSearch = useDebouncedRef(search, 300)
 
 const { data, refresh } = await useAsyncData(
   "athletes-list",
