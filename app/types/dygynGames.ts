@@ -101,34 +101,107 @@ export interface DygynGameResult extends RecordDefault {
   note?: string
 }
 
-export interface DygynGameParticipantExpanded extends DygynGameParticipant {
+// Unified endpoint response for GET /api/dygyn-games/{year}
+// All fields are already localized (no *_ru/*_sah/*_en suffixes)
+
+export interface ExpandedAthlete {
+  id: string
+  name: string
+  slug: string
+  bio: string
+  title: string
+  birthDate: string
+  birthPlace: string
+  region: string
+  club: string
+  photo: string
+  photos: string[]
+  achievements: Array<{ icon: string, text: string }>
+}
+
+export interface DisciplineCompact {
+  id: string
+  name: string
+  unit: string
+}
+
+export interface LocalizedDygynGame {
+  id: string
+  year: number
+  title: string
+  summary: string
+  historicalNote: string
+  location: string
+  venue: string
+  cover: string
+  gallery: string[]
+  sources: SourceItem[]
+  dateStart: string
+  dateEnd: string
+  status: DygynGameStatus
+  isFeatured: boolean
+  isPublished: boolean
+  created: string
+  updated: string
+}
+
+export interface LocalizedDygynParticipant {
+  id: string
+  dygynGame: string
+  athlete: string
+  bibNumber: number
+  finalRank: number
+  totalPoints: number
+  team: string
+  note: string
+  status: DygynParticipantStatus
+  created: string
+  updated: string
   expand?: {
-    athlete?: import("~/types/athlete").Athlete
-    dygynGame?: DygynGame
+    athlete?: ExpandedAthlete
   }
 }
 
-export interface DygynGameEventExpanded extends DygynGameEvent {
+export interface LocalizedDygynEvent {
+  id: string
+  dygynGame: string
+  discipline: string
+  dayNumber: number
+  sortOrder: number
+  dateHeld: string
+  title: string
+  rulesNote: string
+  recordNote: string
+  media: string[]
+  sources: SourceItem[]
+  status: DygynEventStatus
+  created: string
+  updated: string
   expand?: {
-    dygynGame?: DygynGame
-    discipline?: Discipline
+    discipline?: DisciplineCompact
   }
 }
 
-export interface DygynGameResultExpanded extends DygynGameResult {
-  expand?: {
-    event?: DygynGameEventExpanded
-    participant?: DygynGameParticipantExpanded
-  }
+export interface LocalizedDygynResult {
+  id: string
+  event: string
+  participant: string
+  place: number
+  points: number
+  resultValue: string
+  resultLabel: string
+  note: string
+  details: Record<string, unknown> | null
+  status: DygynResultStatus
+  created: string
+  updated: string
 }
 
-export interface DygynGamePageData {
-  game: DygynGame
-  participants: DygynGameParticipantExpanded[]
-  events: Array<{
-    event: DygynGameEventExpanded
-    results: DygynGameResultExpanded[]
-  }>
+export interface DygynGamePageResponse {
+  game: LocalizedDygynGame
+  participants: LocalizedDygynParticipant[]
+  events: LocalizedDygynEvent[]
+  results: LocalizedDygynResult[]
 }
 
 export interface DygynLeaderboardItem {
