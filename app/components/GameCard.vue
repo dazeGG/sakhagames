@@ -17,9 +17,9 @@ const statusLabel: Record<DygynGameStatus, string> = {
 }
 
 const statusColor: Record<DygynGameStatus, string> = {
-  completed: "text-green-500",
-  planned: "text-blue-500",
-  cancelled: "text-red-500",
+  completed: "text-green-400",
+  planned: "text-blue-400",
+  cancelled: "text-red-400",
   archived: "text-neutral-500",
 }
 
