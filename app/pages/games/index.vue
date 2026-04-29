@@ -94,15 +94,17 @@ const tonalBg = (year: number) => {
     `linear-gradient(${angle}deg, #0F0F0F 0%, #1F1F1F 60%, #2F2F2F 100%)`,
   ].join(", ")
 }
+
+const loadedImages = ref(new Set<string>())
+const onImageLoad = (id: string) => {
+  loadedImages.value = new Set([...loadedImages.value, id])
+}
 </script>
 
 <template>
   <div class="bg-neutral-50 min-h-screen">
     <!-- Hero -->
-    <section
-      class="relative overflow-hidden bg-neutral-950"
-      style="height: 33.75rem"
-    >
+    <section class="relative overflow-hidden bg-neutral-950 h-[33.75rem]">
       <div
         class="absolute inset-0"
         :style="heroParallaxStyle"
@@ -115,30 +117,31 @@ const tonalBg = (year: number) => {
       <div class="absolute inset-0 bg-gradient-to-b from-black/20 to-black/85" />
 
       <div class="absolute inset-0 flex flex-col justify-end px-6 pb-10">
-        <p class="font-heading text-[0.5rem] tracking-[0.22rem] font-semibold text-white/60 uppercase mb-4">
+        <p class="hero-meta font-heading text-[0.5rem] tracking-[0.22rem] font-semibold text-white/60 uppercase mb-4">
           {{ heroMeta }}
         </p>
-        <h1 class="font-serif-classic text-[4.5rem] leading-[0.88] tracking-[-0.04em] font-bold text-white mb-0 mt-0">
+        <h1 class="hero-title font-serif-classic text-[4.5rem] leading-[0.88] tracking-[-0.04em] font-bold text-white mb-0 mt-0">
           Игры<br>Дыгына
         </h1>
-        <p class="font-serif-classic text-[0.9375rem] italic leading-[1.55] text-white/75 mt-6 mb-0">
+        <p class="hero-subtitle font-serif-classic text-[0.9375rem] italic leading-[1.55] text-white/75 mt-6 mb-0">
           Документальный архив традиционных состязаний якутского народа
         </p>
       </div>
     </section>
 
-    <!-- Chronicle entries -->
-    <template v-if="games.length">
+    <!-- Chronicle entries — re-keyed on page change to replay stagger -->
+    <div
+      v-if="games.length"
+      :key="currentPage"
+    >
       <article
         v-for="(game, i) in games"
         :key="game.id"
-        class="relative"
+        class="game-article relative"
+        :style="{ animationDelay: `${i * 70}ms` }"
       >
         <!-- Sticky year strip -->
-        <div
-          class="sticky z-10 bg-neutral-50 px-6 py-5 flex justify-between items-baseline border-t border-neutral-900"
-          style="top: 0"
-        >
+        <div class="sticky top-[4rem] z-10 bg-neutral-50 px-6 py-5 flex justify-between items-baseline border-t border-neutral-900">
           <span class="font-serif-classic text-[3.5rem] font-bold leading-none tracking-[-0.04em] text-neutral-900">
             {{ game.year }}
           </span>
@@ -154,12 +157,14 @@ const tonalBg = (year: number) => {
         <div class="bg-white px-6 pb-10">
           <!-- Cover / tonal placeholder -->
           <template v-if="getCoverUrl(game)">
-            <div class="aspect-[4/3] overflow-hidden">
+            <div class="aspect-[4/3] overflow-hidden bg-neutral-800">
               <img
                 :src="getCoverUrl(game)"
                 :alt="game.title"
                 loading="lazy"
-                class="w-full h-full object-cover"
+                class="w-full h-full object-cover cover-img"
+                :class="loadedImages.has(game.id) ? 'cover-img--loaded' : ''"
+                @load="onImageLoad(game.id)"
               >
             </div>
           </template>
@@ -221,7 +226,7 @@ const tonalBg = (year: number) => {
             color="neutral"
             variant="solid"
             block
-            class="font-heading text-[0.6875rem] tracking-[0.18rem] uppercase mt-7"
+            class="cta-btn font-heading text-[0.6875rem] tracking-[0.18rem] uppercase mt-7"
             :ui="{ base: 'justify-between px-5 py-[1.125rem]' }"
           >
             <span>ПОДРОБНЕЕ</span>
@@ -229,7 +234,7 @@ const tonalBg = (year: number) => {
           </UButton>
         </div>
       </article>
-    </template>
+    </div>
 
     <!-- Empty state -->
     <div
@@ -269,3 +274,85 @@ const tonalBg = (year: number) => {
     </div>
   </div>
 </template>
+
+<style scoped>
+/* ── Hero staged entrance ───────────────────────────────── */
+.hero-meta {
+  opacity: 0;
+  animation: fadeUp 500ms cubic-bezier(0.23, 1, 0.32, 1) 100ms both;
+}
+.hero-title {
+  opacity: 0;
+  animation: fadeUp 600ms cubic-bezier(0.23, 1, 0.32, 1) 220ms both;
+}
+.hero-subtitle {
+  opacity: 0;
+  animation: fadeUp 500ms cubic-bezier(0.23, 1, 0.32, 1) 380ms both;
+}
+
+/* ── Article stagger ────────────────────────────────────── */
+.game-article {
+  opacity: 0;
+  animation: articleEnter 450ms cubic-bezier(0.23, 1, 0.32, 1) both;
+}
+
+/* ── Cover image fade-in on load ────────────────────────── */
+.cover-img {
+  opacity: 0;
+  transition: opacity 300ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+.cover-img--loaded {
+  opacity: 1;
+}
+
+/* ── CTA button press feedback ──────────────────────────── */
+/* !important необходим: Nuxt UI добавляет transition на кнопку через свои стили */
+.cta-btn {
+  transition: transform 150ms cubic-bezier(0.23, 1, 0.32, 1) !important;
+}
+.cta-btn:active {
+  transform: scale(0.97);
+}
+
+/* ── Keyframes ──────────────────────────────────────────── */
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes articleEnter {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ── Reduced motion ─────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .hero-meta,
+  .hero-title,
+  .hero-subtitle,
+  .game-article {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+  .cover-img {
+    opacity: 1;
+    transition: none;
+  }
+  .cta-btn {
+    transition: none !important;
+  }
+}
+</style>
