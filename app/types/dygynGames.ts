@@ -203,26 +203,3 @@ export interface DygynGamePageResponse {
   events: LocalizedDygynEvent[]
   results: LocalizedDygynResult[]
 }
-
-export interface DygynLeaderboardItem {
-  participantId: RecordId
-  athleteId: RecordId
-  name: string
-  team?: string
-  bibNumber?: number
-  totalPoints?: number
-  finalRank?: number
-  photo?: string
-}
-
-export interface DygynEventResultRow {
-  place?: number
-  resultLabel?: string
-  points?: number
-  participantId: RecordId
-  athleteId: RecordId
-  name: string
-  team?: string
-  bibNumber?: number
-  photo?: string
-}

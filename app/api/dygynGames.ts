@@ -32,14 +32,10 @@ export const createDygynGamesApi = (pb: PocketBase) => ({
   },
 
   getGamePage: async (year: number, signal?: AbortSignal): Promise<DygynGamePageResponse> => {
-    const lang = typeof localStorage !== "undefined"
-      ? localStorage.getItem("lang") || "ru"
-      : "ru"
-
     const response = await fetch(`${pb.baseUrl}/api/dygyn-games/${year}`, {
       headers: {
         "Content-Type": "application/json",
-        "SG-Language": lang,
+        "SG-Language": "ru",
       },
       signal,
     })
@@ -48,7 +44,7 @@ export const createDygynGamesApi = (pb: PocketBase) => ({
       if (response.status === 404) {
         throw createError({ statusCode: 404, message: "Игра не найдена" })
       }
-      throw await response.json()
+      throw createError({ statusCode: response.status, data: await response.json() })
     }
 
     return response.json()
