@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import type { DygynGame } from "~/types/dygynGames"
+import type { DygynGame, DygynGameStatus } from "~/types/dygynGames"
 
 const { dygynGames: gamesApi } = useApi()
+const fileUrl = usePocketBaseFile()
 
 const PER_PAGE = 6
 const currentPage = ref(1)
@@ -17,49 +18,235 @@ watch(currentPage, () => refresh())
 const games = computed(() => data.value?.items ?? [])
 const totalItems = computed(() => data.value?.totalItems ?? 0)
 const totalPages = computed(() => data.value?.totalPages ?? 1)
+
+const scrollY = ref(0)
+
+onMounted(() => {
+  const onScroll = () => {
+    scrollY.value = window.scrollY
+  }
+  window.addEventListener("scroll", onScroll, { passive: true })
+  onUnmounted(() => window.removeEventListener("scroll", onScroll))
+})
+
+const heroParallaxStyle = computed(() => ({
+  transform: `translateY(${scrollY.value * 0.4}px) scale(${1 + scrollY.value * 0.0003})`,
+}))
+
+const gameNumber = (index: number) =>
+  totalItems.value - ((currentPage.value - 1) * PER_PAGE + index)
+
+const minYear = computed(() =>
+  games.value.length ? Math.min(...games.value.map(g => g.year)) : null,
+)
+const maxYear = computed(() =>
+  games.value.length ? Math.max(...games.value.map(g => g.year)) : null,
+)
+
+const heroMeta = computed(() => {
+  if (!minYear.value || !maxYear.value) return "АРХИВ · ИГРЫ ДЫГЫНА"
+  const yearsStr = minYear.value === maxYear.value
+    ? String(minYear.value)
+    : `${minYear.value}–${maxYear.value}`
+  const n = totalItems.value
+  const mod10 = n % 10
+  const mod100 = n % 100
+  let word = "ИГР"
+  if (mod100 < 11 || mod100 > 14) {
+    if (mod10 === 1) word = "ИГРА"
+    else if (mod10 >= 2 && mod10 <= 4) word = "ИГРЫ"
+  }
+  return `АРХИВ · ${yearsStr} · ${n} ${word}`
+})
+
+const getCoverUrl = (game: DygynGame) =>
+  game.cover ? fileUrl("dygyn_games", game.id, game.cover) : ""
+
+const statusLabel: Record<DygynGameStatus, string> = {
+  completed: "Завершено",
+  planned: "Планируется",
+  cancelled: "Отменено",
+  archived: "Архив",
+}
+
+const formatDateRange = (game: DygynGame) => {
+  if (!game.dateStart) return null
+  const start = new Date(game.dateStart)
+  if (!game.dateEnd) {
+    return start.toLocaleDateString("ru-RU", { day: "numeric", month: "long" })
+  }
+  const end = new Date(game.dateEnd)
+  const startStr = start.toLocaleDateString("ru-RU", { day: "numeric", month: "long" })
+  const endStr = end.toLocaleDateString("ru-RU", { day: "numeric", month: "long" })
+  return `${startStr} – ${endStr}`
+}
+
+const tonalBg = (year: number) => {
+  const h = year % 100
+  const angle = (h * 7) % 360
+  const x1 = 30 + (h % 40)
+  const y1 = 20 + (h % 30)
+  const x2 = 70 - (h % 30)
+  const y2 = 80 - (h % 20)
+  return [
+    `radial-gradient(ellipse at ${x1}% ${y1}%, #2F2F2F 0%, transparent 50%)`,
+    `radial-gradient(ellipse at ${x2}% ${y2}%, #0F0F0F 0%, transparent 60%)`,
+    `linear-gradient(${angle}deg, #0F0F0F 0%, #1F1F1F 60%, #2F2F2F 100%)`,
+  ].join(", ")
+}
 </script>
 
 <template>
   <div class="bg-neutral-50 min-h-screen">
     <!-- Hero -->
-    <section class="px-5 pt-10 pb-8">
-      <p class="font-heading text-[0.5625rem] tracking-[0.2rem] font-semibold text-neutral-600 uppercase mb-6">
-        Исторический архив
-      </p>
-      <h1 class="text-6xl leading-[0.9] font-bold text-neutral-900 mb-7 mt-0">
-        Игры<br>Дыгына
-      </h1>
-      <p class="font-sans text-sm leading-relaxed text-neutral-900">
-        Документальный архив традиционных состязаний якутского народа.
-        Сезоны, результаты, места проведения и связанные материалы.
-      </p>
-    </section>
-
-    <!-- Games list -->
-    <section class="px-5 py-7 grid grid-cols-2 gap-4">
-      <GameCard
-        v-for="game in games"
-        :key="game.id"
-        :game="game"
-      />
-
-      <!-- Empty state -->
+    <section
+      class="relative overflow-hidden bg-neutral-950"
+      style="height: 33.75rem"
+    >
       <div
-        v-if="games.length === 0"
-        class="col-span-2 py-20 text-center"
+        class="absolute inset-0"
+        :style="heroParallaxStyle"
       >
-        <p class="font-heading text-[0.6875rem] tracking-[0.2rem] font-semibold text-neutral-500 uppercase">
-          Игры не найдены
+        <div
+          class="w-full h-full"
+          style="background: radial-gradient(ellipse at 35% 25%, #2F2F2F 0%, transparent 50%), radial-gradient(ellipse at 70% 80%, #0F0F0F 0%, transparent 60%), linear-gradient(137deg, #0F0F0F 0%, #1F1F1F 60%, #2F2F2F 100%)"
+        />
+      </div>
+      <div class="absolute inset-0 bg-gradient-to-b from-black/20 to-black/85" />
+
+      <div class="absolute inset-0 flex flex-col justify-end px-6 pb-10">
+        <p class="font-heading text-[0.5rem] tracking-[0.22rem] font-semibold text-white/60 uppercase mb-4">
+          {{ heroMeta }}
+        </p>
+        <h1 class="font-serif-classic text-[4.5rem] leading-[0.88] tracking-[-0.04em] font-bold text-white mb-0 mt-0">
+          Игры<br>Дыгына
+        </h1>
+        <p class="font-serif-classic text-[0.9375rem] italic leading-[1.55] text-white/75 mt-6 mb-0">
+          Документальный архив традиционных состязаний якутского народа
         </p>
       </div>
     </section>
 
+    <!-- Chronicle entries -->
+    <template v-if="games.length">
+      <article
+        v-for="(game, i) in games"
+        :key="game.id"
+        class="relative"
+      >
+        <!-- Sticky year strip -->
+        <div
+          class="sticky z-10 bg-neutral-50 px-6 py-5 flex justify-between items-baseline border-t border-neutral-900"
+          style="top: 0"
+        >
+          <span class="font-serif-classic text-[3.5rem] font-bold leading-none tracking-[-0.04em] text-neutral-900">
+            {{ game.year }}
+          </span>
+          <span
+            class="font-heading text-[0.5625rem] tracking-[0.22rem] font-semibold uppercase"
+            :class="game.status === 'cancelled' ? 'text-neutral-500' : 'text-neutral-900'"
+          >
+            {{ game.status === 'cancelled' ? 'ОТМЕНЁН' : `ИГРЫ №${gameNumber(i)}` }}
+          </span>
+        </div>
+
+        <!-- Card body -->
+        <div class="bg-white px-6 pb-10">
+          <!-- Cover / tonal placeholder -->
+          <template v-if="getCoverUrl(game)">
+            <div class="aspect-[4/3] overflow-hidden">
+              <img
+                :src="getCoverUrl(game)"
+                :alt="game.title"
+                loading="lazy"
+                class="w-full h-full object-cover"
+              >
+            </div>
+          </template>
+          <template v-else-if="game.status !== 'cancelled'">
+            <div
+              class="aspect-[4/3] relative overflow-hidden"
+              :style="{ background: tonalBg(game.year) }"
+            >
+              <div
+                class="absolute inset-0 pointer-events-none"
+                style="background-image: radial-gradient(rgba(255,255,255,0.04) 1px, transparent 1px); background-size: 0.1875rem 0.1875rem; mix-blend-mode: overlay"
+              />
+            </div>
+          </template>
+
+          <!-- Meta — тональные ячейки без линий -->
+          <div class="grid grid-cols-2 mt-6">
+            <div class="px-4 py-4 bg-neutral-100">
+              <p class="font-heading text-[0.5625rem] tracking-[0.2rem] font-semibold text-neutral-500 uppercase mb-1 mt-0">
+                МЕСТО
+              </p>
+              <p class="font-serif-classic text-[1rem] font-bold text-neutral-900 leading-[1.2] mb-0 mt-0">
+                {{ game.location ?? '—' }}
+              </p>
+            </div>
+            <div class="px-4 py-4 bg-neutral-200">
+              <p class="font-heading text-[0.5625rem] tracking-[0.2rem] font-semibold text-neutral-500 uppercase mb-1 mt-0">
+                СТАТУС
+              </p>
+              <p class="font-serif-classic text-[1rem] font-bold text-neutral-900 leading-[1.2] mb-0 mt-0">
+                {{ statusLabel[game.status] }}
+              </p>
+            </div>
+            <div
+              v-if="formatDateRange(game)"
+              class="px-4 py-4 col-span-2 bg-neutral-50"
+            >
+              <p class="font-heading text-[0.5625rem] tracking-[0.2rem] font-semibold text-neutral-500 uppercase mb-1 mt-0">
+                ДАТА
+              </p>
+              <p class="font-serif-classic text-[1rem] font-bold text-neutral-900 leading-[1.2] mb-0 mt-0">
+                {{ formatDateRange(game) }}
+              </p>
+            </div>
+          </div>
+
+          <!-- Quote / summary -->
+          <p
+            v-if="game.summary"
+            class="font-serif-classic text-[1.0625rem] italic leading-[1.5] text-neutral-700 mt-6 mb-0"
+          >
+            «{{ game.summary }}»
+          </p>
+
+          <!-- CTA -->
+          <UButton
+            v-if="game.status !== 'cancelled'"
+            :to="`/games/${game.year}`"
+            color="neutral"
+            variant="solid"
+            block
+            class="font-heading text-[0.6875rem] tracking-[0.18rem] uppercase mt-7"
+            :ui="{ base: 'justify-between px-5 py-[1.125rem]' }"
+          >
+            <span>ПОДРОБНЕЕ</span>
+            <span>→</span>
+          </UButton>
+        </div>
+      </article>
+    </template>
+
+    <!-- Empty state -->
+    <div
+      v-else
+      class="py-20 px-6"
+    >
+      <p class="font-heading text-[0.6875rem] tracking-[0.2rem] font-semibold text-neutral-500 uppercase">
+        Игры не найдены
+      </p>
+    </div>
+
     <!-- Pagination -->
     <div
       v-if="totalPages > 1"
-      class="px-6 py-8 flex flex-col items-center gap-5 font-heading"
+      class="bg-neutral-200 px-6 py-10 flex flex-col items-center gap-5 font-heading"
     >
-      <div class="text-[0.625rem] tracking-[0.2rem] font-semibold text-neutral-600 uppercase">
+      <div class="text-[0.5625rem] tracking-[0.2rem] font-semibold text-neutral-600 uppercase">
         СТРАНИЦА {{ currentPage }} ИЗ {{ totalPages }}
       </div>
       <UPagination

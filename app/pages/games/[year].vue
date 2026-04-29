@@ -102,15 +102,24 @@ const eventsWithResults = computed(() => {
   })) ?? []
 })
 
-const topParticipants = computed(() => {
-  return pageData.value?.participants
-    .filter(p => p.finalRank && p.finalRank <= 3)
-    .sort((a, b) => (a.finalRank ?? 99) - (b.finalRank ?? 99))
-    ?? []
+const allParticipantsSorted = computed(() =>
+  [...(pageData.value?.participants ?? [])]
+    .filter(p => p.finalRank)
+    .sort((a, b) => (a.finalRank ?? 99) - (b.finalRank ?? 99)),
+)
+
+const activeEventId = ref("")
+
+watchEffect(() => {
+  const first = eventsWithResults.value[0]
+  if (first && !activeEventId.value) {
+    activeEventId.value = first.event.id
+  }
 })
 
-const formatPoints = (points: number | undefined) =>
-  points !== undefined ? `${points}` : "—"
+const activeEventData = computed(() =>
+  eventsWithResults.value.find(ewr => ewr.event.id === activeEventId.value),
+)
 
 const getAthleteName = (result: LocalizedDygynResult) => {
   const participant = participantsById.value.get(result.participant)
@@ -196,144 +205,152 @@ const getTeam = (result: LocalizedDygynResult) =>
       </p>
     </section>
 
+    <!-- Unified standings table -->
     <section
-      v-if="topParticipants.length"
-      class="bg-neutral-50 px-5 py-8"
+      v-if="allParticipantsSorted.length"
+      class="py-8"
     >
-      <p class="font-heading text-[0.625rem] tracking-[0.2rem] font-semibold text-neutral-500 uppercase mb-6">
-        Победители
+      <p class="font-heading text-[0.625rem] tracking-[0.2rem] font-semibold text-neutral-500 uppercase px-5 mb-0 pb-5">
+        Итоговая таблица
       </p>
-      <div class="grid gap-3">
+      <div>
         <div
-          v-for="participant in topParticipants"
+          v-for="(participant, i) in allParticipantsSorted"
           :key="participant.id"
-          :class="participant.finalRank === 1 ? 'flex items-center gap-4 bg-yellow-100 px-4 py-4' : 'flex items-center gap-4 bg-neutral-100 px-4 py-3'"
+          class="flex items-center gap-4 px-5 py-3"
+          :class="i % 2 === 0 ? 'bg-neutral-50' : 'bg-neutral-100'"
         >
-          <span
-            class="font-serif-classic text-3xl font-bold w-8 text-center shrink-0 leading-none"
-            :class="participant.finalRank === 1 ? 'text-yellow-600' : 'text-neutral-500'"
-          >
-            {{ participant.finalRank }}
-          </span>
+          <div class="w-10 shrink-0 flex flex-col items-center">
+            <span
+              class="font-serif-classic font-bold leading-none text-center"
+              :class="
+                participant.finalRank === 1 ? 'text-yellow-600 text-4xl'
+                : participant.finalRank <= 3 ? 'text-neutral-700 text-3xl'
+                  : 'text-neutral-400 text-2xl'
+              "
+            >
+              {{ participant.finalRank }}
+            </span>
+            <span
+              v-if="participant.totalPoints"
+              class="font-heading text-[0.4375rem] tracking-[0.04rem] text-neutral-400 mt-1 whitespace-nowrap leading-none"
+            >
+              {{ participant.totalPoints }} оч.
+            </span>
+          </div>
           <div class="flex-1 min-w-0">
-            <p class="font-serif-classic text-lg font-bold text-neutral-900 leading-tight mb-0 truncate">
+            <p class="font-serif-classic text-[1rem] font-bold text-neutral-900 truncate mb-0 leading-snug">
               {{ participant.expand?.athlete?.name ?? "—" }}
             </p>
             <p
               v-if="participant.team"
-              class="font-sans text-[0.75rem] text-neutral-600 truncate mb-0"
+              class="font-heading text-[0.5rem] tracking-[0.08rem] text-neutral-500 uppercase truncate mb-0"
             >
               {{ participant.team }}
             </p>
           </div>
-          <span class="font-heading text-[0.5625rem] tracking-[0.1rem] text-neutral-500 uppercase shrink-0">
-            {{ formatPoints(participant.totalPoints) }} очк.
-          </span>
         </div>
       </div>
     </section>
 
-    <section class="px-5 py-8">
-      <p class="font-heading text-[0.625rem] tracking-[0.2rem] font-semibold text-neutral-500 uppercase mb-6">
-        Протокол результатов
+    <!-- Detailed results by discipline with tabs -->
+    <section
+      v-if="eventsWithResults.length"
+      class="bg-neutral-100 pb-8"
+    >
+      <p class="font-heading text-[0.625rem] tracking-[0.2rem] font-semibold text-neutral-500 uppercase px-5 py-6 mb-0">
+        По дисциплинам
       </p>
-      <div
-        v-if="eventsWithResults.length"
-        class="grid gap-8"
-      >
-        <div
-          v-for="{ event, results } in eventsWithResults"
-          :key="event.id"
-          class="bg-neutral-100"
+
+      <!-- Tab list -->
+      <div class="flex overflow-x-auto bg-neutral-900">
+        <button
+          v-for="ewr in eventsWithResults"
+          :key="ewr.event.id"
+          type="button"
+          class="shrink-0 px-5 py-3.5 font-heading text-[0.5rem] tracking-[0.2rem] font-semibold uppercase whitespace-nowrap transition-colors"
+          :class="activeEventId === ewr.event.id ? 'text-white bg-neutral-700' : 'text-neutral-500'"
+          @click="activeEventId = ewr.event.id"
         >
-          <div class="bg-neutral-900 px-4 py-3">
-            <div class="flex items-start justify-between gap-2">
-              <div>
-                <p class="font-serif-classic text-lg font-bold text-white mb-0 leading-tight">
-                  {{ event.expand?.discipline?.name ?? event.title ?? "Дисциплина" }}
+          {{ ewr.event.expand?.discipline?.name ?? ewr.event.title ?? "Событие" }}
+        </button>
+      </div>
+
+      <template v-if="activeEventData">
+        <!-- Event meta strip -->
+        <div
+          v-if="activeEventData.event.dateHeld || activeEventData.event.status"
+          class="px-5 pt-4 pb-0 flex items-center justify-between gap-3"
+        >
+          <p
+            v-if="activeEventData.event.dateHeld"
+            class="font-heading text-[0.5rem] tracking-[0.12rem] text-neutral-500 uppercase mb-0"
+          >
+            {{ new Date(activeEventData.event.dateHeld).toLocaleDateString("ru-RU", { day: "numeric", month: "long" }) }}
+          </p>
+          <span
+            v-if="activeEventData.event.status"
+            :class="['font-heading text-[0.5rem] tracking-[0.15rem] font-semibold uppercase', eventStatusColor[activeEventData.event.status]]"
+          >
+            {{ eventStatusLabel[activeEventData.event.status] }}
+          </span>
+        </div>
+
+        <!-- Results table -->
+        <div
+          v-if="activeEventData.results.length"
+          class="px-5 pt-4 pb-6"
+        >
+          <div class="font-heading text-[0.45rem] tracking-[0.15rem] font-semibold text-neutral-400 uppercase grid grid-cols-[2.75rem_1fr_3.5rem_2.5rem] gap-2 mb-3">
+            <span class="text-right">М</span>
+            <span>Участник</span>
+            <span class="text-right">Результат</span>
+            <span class="text-right">Оч.</span>
+          </div>
+          <div class="grid gap-3">
+            <div
+              v-for="result in activeEventData.results"
+              :key="result.id"
+              class="grid grid-cols-[2.75rem_1fr_3.5rem_2.5rem] gap-2 items-start"
+            >
+              <span
+                class="font-serif-classic font-bold leading-none text-right pt-0.5"
+                :class="result.place === 1 ? 'text-yellow-600 text-2xl' : result.place ? 'text-neutral-400 text-xl' : 'text-neutral-300 text-xl'"
+              >
+                {{ result.place ?? "—" }}
+              </span>
+              <div class="min-w-0">
+                <p
+                  class="font-sans text-[0.875rem] truncate mb-0 leading-tight"
+                  :class="resultStatusColor[result.status ?? 'finished']"
+                >
+                  {{ getAthleteName(result) }}
                 </p>
                 <p
-                  v-if="event.dateHeld"
-                  class="font-sans text-[0.6875rem] text-neutral-400 mt-0.5 mb-0"
+                  v-if="getTeam(result)"
+                  class="font-sans text-[0.6875rem] text-neutral-500 truncate mb-0"
                 >
-                  {{ new Date(event.dateHeld).toLocaleDateString("ru-RU", { day: "numeric", month: "long", year: "numeric" }) }}
+                  {{ getTeam(result) }}
                 </p>
               </div>
-              <div class="flex items-center gap-2 shrink-0">
-                <span
-                  v-if="event.status"
-                  :class="['font-heading text-[0.5rem] tracking-[0.15rem] font-semibold uppercase', eventStatusColor[event.status]]"
-                >
-                  {{ eventStatusLabel[event.status] }}
-                </span>
-                <span class="font-heading text-[0.5625rem] text-neutral-500">
-                  {{ results.length }} уч.
-                </span>
-              </div>
+              <span class="font-mono text-[0.75rem] text-neutral-600 text-right truncate pt-0.5">
+                {{ result.resultValue ?? "—" }}
+              </span>
+              <span class="font-heading text-[0.625rem] tracking-[0.05rem] text-neutral-500 text-right pt-0.5">
+                {{ result.points ?? "" }}
+              </span>
             </div>
-          </div>
-
-          <div
-            v-if="results.length"
-            class="px-4 pt-4 pb-5"
-          >
-            <div class="font-heading text-[0.5rem] tracking-[0.15rem] font-semibold text-neutral-500 uppercase grid grid-cols-[2.5rem_1fr_3.5rem_3.5rem] gap-3 mb-3">
-              <span>М</span>
-              <span>Участник</span>
-              <span class="text-right">Результат</span>
-              <span class="text-right">Очки</span>
-            </div>
-            <div class="grid gap-2">
-              <div
-                v-for="result in results"
-                :key="result.id"
-                class="grid grid-cols-[2.5rem_1fr_3.5rem_3.5rem] gap-3 items-baseline"
-              >
-                <span
-                  class="font-serif-classic text-2xl font-bold leading-none text-right"
-                  :class="result.place === 1 ? 'text-yellow-600' : result.place ? 'text-neutral-400' : 'text-neutral-300'"
-                >
-                  {{ result.place ?? "—" }}
-                </span>
-                <div class="min-w-0">
-                  <p
-                    class="font-sans text-[0.875rem] truncate mb-0 leading-tight"
-                    :class="resultStatusColor[result.status ?? 'finished']"
-                  >
-                    {{ getAthleteName(result) }}
-                  </p>
-                  <p
-                    v-if="getTeam(result)"
-                    class="font-sans text-[0.6875rem] text-neutral-500 truncate mb-0"
-                  >
-                    {{ getTeam(result) }}
-                  </p>
-                </div>
-                <span class="font-mono text-[0.8125rem] text-neutral-600 text-right truncate">
-                  {{ result.resultValue ?? "—" }}
-                </span>
-                <span class="font-heading text-[0.6875rem] tracking-[0.05rem] text-neutral-500 text-right">
-                  {{ result.points ?? "" }}
-                </span>
-              </div>
-            </div>
-          </div>
-          <div
-            v-else
-            class="px-4 py-8 text-center"
-          >
-            <p class="font-heading text-[0.5625rem] tracking-[0.15rem] text-neutral-500 uppercase">
-              Результаты не опубликованы
-            </p>
           </div>
         </div>
-      </div>
-      <p
-        v-else
-        class="font-heading text-[0.625rem] tracking-[0.15rem] text-neutral-500 uppercase"
-      >
-        События не найдены
-      </p>
+        <div
+          v-else
+          class="px-5 py-8 text-center"
+        >
+          <p class="font-heading text-[0.5625rem] tracking-[0.15rem] text-neutral-500 uppercase">
+            Результаты не опубликованы
+          </p>
+        </div>
+      </template>
     </section>
 
     <section
