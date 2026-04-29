@@ -21,13 +21,11 @@ const totalPages = computed(() => data.value?.totalPages ?? 1)
 
 const scrollY = ref(0)
 
-onMounted(() => {
-  const onScroll = () => {
-    scrollY.value = window.scrollY
-  }
-  window.addEventListener("scroll", onScroll, { passive: true })
-  onUnmounted(() => window.removeEventListener("scroll", onScroll))
-})
+const onScroll = () => {
+  scrollY.value = window.scrollY
+}
+onMounted(() => window.addEventListener("scroll", onScroll, { passive: true }))
+onUnmounted(() => window.removeEventListener("scroll", onScroll))
 
 const heroParallaxStyle = computed(() => ({
   transform: `translateY(${scrollY.value * 0.4}px) scale(${1 + scrollY.value * 0.0003})`,
@@ -141,13 +139,13 @@ const onImageLoad = (id: string) => {
         :style="{ animationDelay: `${i * 70}ms` }"
       >
         <!-- Sticky year strip -->
-        <div class="sticky top-[4rem] z-10 bg-neutral-50 px-6 py-5 flex justify-between items-baseline border-t border-neutral-900">
+        <div class="sticky top-[4rem] z-10 bg-neutral-200 px-6 py-5 flex justify-between items-baseline">
           <span class="font-serif-classic text-[3.5rem] font-bold leading-none tracking-[-0.04em] text-neutral-900">
             {{ game.year }}
           </span>
           <span
             class="font-heading text-[0.5625rem] tracking-[0.22rem] font-semibold uppercase"
-            :class="game.status === 'cancelled' ? 'text-neutral-500' : 'text-neutral-900'"
+            :class="game.status === 'cancelled' ? 'text-neutral-500' : 'text-neutral-700'"
           >
             {{ game.status === 'cancelled' ? 'ОТМЕНЁН' : `ИГРЫ №${gameNumber(i)}` }}
           </span>
