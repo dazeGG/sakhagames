@@ -15,7 +15,7 @@ const fileUrl = usePocketBaseFile()
 const year = computed(() => Number(route.params.year))
 
 const { data: pageData } = await useAsyncData<DygynGamePageResponse>(
-  `dygyn-game-page-${year.value}`,
+  () => `dygyn-game-page-${route.params.year}`,
   () => gamesApi.getGamePage(year.value),
 )
 
@@ -76,9 +76,9 @@ const eventStatusColor: Record<DygynEventStatus, string> = {
 
 const resultStatusColor: Record<DygynResultStatus, string> = {
   finished: "text-neutral-900",
-  dns: "text-red-600",
-  dnf: "text-red-600",
-  dsq: "text-red-600",
+  dns: "text-red-500",
+  dnf: "text-red-500",
+  dsq: "text-red-500",
 }
 
 const dateDisplay = computed(() => {
