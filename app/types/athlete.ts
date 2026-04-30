@@ -1,3 +1,5 @@
+import type { FileName, RecordSlug } from "~/types"
+
 export interface AthleteAchievement {
   icon: string
   text: string
@@ -5,10 +7,7 @@ export interface AthleteAchievement {
 
 export type AthleteAchievements = AthleteAchievement[]
 
-export interface Athlete {
-  id: string
-  slug: string
-
+export interface Athlete extends RecordSlug {
   isActive: boolean
 
   birthDate: string
@@ -22,11 +21,8 @@ export interface Athlete {
 
   achievements: AthleteAchievements
 
-  photo: string
-  photos: string[]
-
-  created: string
-  updated: string
+  photo: FileName
+  photos: FileName[]
 }
 
 export type AthletesList = Athlete[]
