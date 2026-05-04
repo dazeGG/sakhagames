@@ -1,4 +1,3 @@
-import type PocketBase from "pocketbase"
 import type {
   DygynGame,
   DygynGamePageResponse,
@@ -10,32 +9,27 @@ interface GamesListResponse {
   totalPages: number
 }
 
-export const createDygynGamesApi = (pb: PocketBase) => ({
+export const createDygynGamesApi = (baseUrl: string, lang: string) => ({
   getList: async (page = 1, perPage = 10): Promise<GamesListResponse> => {
-    const result = await pb.collection("dygyn_games").getList<DygynGame>(page, perPage, {
-      sort: "-year,-dateStart",
-      filter: "isPublished = true",
+    const all = await $fetch<DygynGame[]>(`${baseUrl}/dygyn-game-records/`, {
+      headers: { "SG-Language": lang },
     })
+    const sorted = [...all].sort((a, b) => b.year - a.year)
+    const totalItems = sorted.length
+    const totalPages = Math.ceil(totalItems / perPage)
+    const start = (page - 1) * perPage
     return {
-      items: result.items,
-      totalItems: result.totalItems,
-      totalPages: result.totalPages,
-    }
-  },
-
-  getByYear: async (year: number): Promise<DygynGame | null> => {
-    try {
-      return await pb.collection("dygyn_games").getFirstListItem<DygynGame>(`year = ${year}`)
-    } catch {
-      return null
+      items: sorted.slice(start, start + perPage),
+      totalItems,
+      totalPages,
     }
   },
 
   getGamePage: async (year: number, signal?: AbortSignal): Promise<DygynGamePageResponse> => {
-    const response = await fetch(`${pb.baseUrl}/api/dygyn-games/${year}`, {
+    const response = await fetch(`${baseUrl}/dygyn-games/${year}/`, {
       headers: {
         "Content-Type": "application/json",
-        "SG-Language": "ru",
+        "SG-Language": lang,
       },
       signal,
     })

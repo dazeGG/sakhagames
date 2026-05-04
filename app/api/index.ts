@@ -1,10 +1,9 @@
-import type PocketBase from "pocketbase"
 import { createAthletesApi } from "./athletes"
 import { createDygynGamesApi } from "./dygynGames"
 
-export const createApi = (pb: PocketBase) => ({
-  athletes: createAthletesApi(pb),
-  dygynGames: createDygynGamesApi(pb),
+export const createApi = (baseUrl: string, lang = "ru") => ({
+  athletes: createAthletesApi(baseUrl, lang),
+  dygynGames: createDygynGamesApi(baseUrl, lang),
 })
 
 export type Api = ReturnType<typeof createApi>
