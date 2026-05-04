@@ -3,7 +3,6 @@ import DOMPurify from "isomorphic-dompurify"
 
 const route = useRoute()
 const { athletes: athletesApi } = useApi()
-const fileUrl = usePocketBaseFile()
 
 const { data: athlete } = await useAsyncData(
   `athlete-${route.params.slug}`,
@@ -16,12 +15,8 @@ if (!athlete.value) {
 
 useSeoMeta({ title: () => athlete.value?.name ?? "" })
 
-const photoUrl = computed(() =>
-  athlete.value?.photo ? fileUrl("athletes", athlete.value.id, athlete.value.photo) : "",
-)
-const photoUrls = computed(() =>
-  athlete.value?.photos?.map(p => fileUrl("athletes", athlete.value!.id, p)) ?? [],
-)
+const photoUrl = computed(() => athlete.value?.photo ?? "")
+const photoUrls = computed(() => athlete.value?.photos ?? [])
 
 const birthYear = computed(() => {
   if (!athlete.value?.birthDate) return null

@@ -2,7 +2,6 @@
 import type { DygynGame, DygynGameStatus } from "~/types/dygynGames"
 
 const { dygynGames: gamesApi } = useApi()
-const fileUrl = usePocketBaseFile()
 
 const PER_PAGE = 6
 const currentPage = ref(1)
@@ -57,8 +56,7 @@ const heroMeta = computed(() => {
   return `АРХИВ · ${yearsStr} · ${n} ${word}`
 })
 
-const getCoverUrl = (game: DygynGame) =>
-  game.cover ? fileUrl("dygyn_games", game.id, game.cover) : ""
+const getCoverUrl = (game: DygynGame) => game.cover ?? ""
 
 const statusLabel: Record<DygynGameStatus, string> = {
   completed: "Завершено",

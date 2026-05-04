@@ -10,7 +10,6 @@ import type {
 
 const route = useRoute()
 const { dygynGames: gamesApi } = useApi()
-const fileUrl = usePocketBaseFile()
 
 const year = computed(() => Number(route.params.year))
 
@@ -21,11 +20,7 @@ const { data: pageData } = await useAsyncData<DygynGamePageResponse>(
 
 useSeoMeta({ title: () => pageData.value?.game.title ?? "" })
 
-const coverUrl = computed(() => {
-  const game = pageData.value?.game
-  if (!game?.cover) return ""
-  return fileUrl("dygyn_games", game.id, game.cover)
-})
+const coverUrl = computed(() => pageData.value?.game?.cover ?? "")
 
 const coverLoaded = ref(false)
 const onCoverLoad = () => {

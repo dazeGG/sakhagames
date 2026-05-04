@@ -3,11 +3,7 @@ import type { Athlete } from "~/types/athlete"
 
 const props = defineProps<{ athlete: Athlete }>()
 
-const fileUrl = usePocketBaseFile()
-
-const photoUrl = computed(() =>
-  fileUrl("athletes", props.athlete.id, props.athlete.photo),
-)
+const photoUrl = computed(() => props.athlete.photo ?? "")
 
 const achievements = computed(() => props.athlete.achievements?.slice(0, 2) ?? [])
 </script>

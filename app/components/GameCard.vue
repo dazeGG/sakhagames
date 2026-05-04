@@ -3,11 +3,7 @@ import type { DygynGame, DygynGameStatus } from "~/types/dygynGames"
 
 const props = defineProps<{ game: DygynGame }>()
 
-const fileUrl = usePocketBaseFile()
-
-const coverUrl = computed(() =>
-  props.game.cover ? fileUrl("dygyn_games", props.game.id, props.game.cover) : "",
-)
+const coverUrl = computed(() => props.game.cover ?? "")
 
 const statusLabel: Record<DygynGameStatus, string> = {
   completed: "Завершено",
