@@ -14,12 +14,12 @@ export interface Athlete extends RecordSlug {
 
   name: string
   birthPlace: string
-  region: string
   club: string
   title: string
   bio: string
 
   achievements: AthleteAchievements
+  socialLinks: unknown
 
   photo: FileName
   photos: FileName[]
