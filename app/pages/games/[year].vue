@@ -181,7 +181,7 @@ const getTeam = (result: LocalizedDygynResult) =>
       <!-- Overlay with title -->
       <div class="absolute bottom-0 left-0 right-0 px-5 pb-6 pt-16 bg-linear-to-t from-primary-500 via-primary-500/80 to-transparent">
         <span
-          v-if="pageData?.game"
+          v-if="pageData?.game?.status"
           :class="['font-heading text-[0.5rem] tracking-[0.18rem] font-semibold uppercase mb-3 block', statusColor[pageData.game.status]]"
         >
           {{ statusLabel[pageData.game.status] }}
@@ -252,10 +252,10 @@ const getTeam = (result: LocalizedDygynResult) =>
               {{ participant.finalRank }}
             </span>
             <span
-              v-if="participant.totalPoints"
+              v-if="participant.placesSum"
               class="font-heading text-[0.4375rem] tracking-[0.04rem] text-neutral-400 whitespace-nowrap leading-none"
             >
-              {{ participant.totalPoints }} оч.
+              {{ participant.placesSum }} оч.
             </span>
           </div>
           <div class="flex-1 min-w-0">
@@ -321,20 +321,19 @@ const getTeam = (result: LocalizedDygynResult) =>
           v-if="activeEventData.results.length"
           class="px-5 pt-4 pb-6"
         >
-          <div class="font-heading text-[0.4375rem] tracking-[0.14rem] font-semibold text-neutral-400 uppercase grid grid-cols-[2.75rem_1fr_3.5rem_2.5rem] gap-2 mb-3 pb-2 border-b border-neutral-200">
-            <span class="text-right">М</span>
+          <div class="font-heading text-[0.4375rem] tracking-[0.14rem] font-semibold text-neutral-400 uppercase grid grid-cols-[1.75rem_1fr_3.5rem] gap-2 mb-3 pb-2 border-b border-neutral-200">
+            <span>М</span>
             <span>Участник</span>
             <span class="text-right">Результат</span>
-            <span class="text-right">Оч.</span>
           </div>
           <div class="grid gap-3">
             <div
               v-for="result in activeEventData.results"
               :key="result.id"
-              class="grid grid-cols-[2.75rem_1fr_3.5rem_2.5rem] gap-2 items-start"
+              class="grid grid-cols-[1.75rem_1fr_3.5rem] gap-2 items-start"
             >
               <span
-                class="font-serif-classic font-bold leading-none text-right pt-0.5"
+                class="font-serif-classic font-bold leading-none pt-0.5"
                 :class="result.place === 1 ? 'text-yellow-500 text-[1.5rem]' : result.place ? 'text-neutral-400 text-[1.25rem]' : 'text-neutral-300 text-[1.25rem]'"
               >
                 {{ result.place ?? "—" }}
@@ -354,10 +353,7 @@ const getTeam = (result: LocalizedDygynResult) =>
                 </p>
               </div>
               <span class="font-mono text-[0.75rem] text-neutral-600 text-right truncate pt-0.5">
-                {{ result.resultValue ?? "—" }}
-              </span>
-              <span class="font-heading text-[0.625rem] tracking-[0.05rem] text-neutral-500 text-right pt-0.5">
-                {{ result.points ?? "" }}
+                {{ result.resultLabel ?? "—" }}
               </span>
             </div>
           </div>

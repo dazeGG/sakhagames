@@ -191,7 +191,7 @@ const onImageLoad = (id: string) => {
                 СТАТУС
               </p>
               <p class="font-serif-classic text-[1rem] font-bold text-neutral-900 leading-[1.2] mb-0 mt-0">
-                {{ statusLabel[game.status] }}
+                {{ game.status ? statusLabel[game.status] : "" }}
               </p>
             </div>
             <div

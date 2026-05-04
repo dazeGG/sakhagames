@@ -48,9 +48,9 @@ const locationDisplay = computed(() => props.game.location ?? null)
     <div class="p-5">
       <div class="flex items-center justify-between mb-3">
         <span
-          :class="['font-heading text-[0.5625rem] tracking-[0.15rem] font-semibold uppercase', statusColor[game.status]]"
+          :class="['font-heading text-[0.5625rem] tracking-[0.15rem] font-semibold uppercase', game.status ? statusColor[game.status] : '']"
         >
-          {{ statusLabel[game.status] }}
+          {{ game.status ? statusLabel[game.status] : "" }}
         </span>
         <span class="font-heading text-[0.5625rem] tracking-[0.12rem] font-semibold text-neutral-500 uppercase">
           {{ game.year }}

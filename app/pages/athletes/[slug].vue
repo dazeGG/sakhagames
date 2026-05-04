@@ -28,7 +28,6 @@ const metaRows = computed(() => {
   return [
     { label: "Год рождения", value: birthYear.value },
     { label: "Место рождения", value: a.birthPlace },
-    { label: "Регион", value: a.region },
     { label: "Клуб", value: a.club },
   ].filter(r => r.value)
 })
