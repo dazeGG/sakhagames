@@ -41,16 +41,15 @@ pnpm lint         # ESLint
 pnpm typecheck    # TypeScript check (nuxt typecheck)
 ```
 
-## Data Layer (PocketBase)
+## Data Layer (Django REST API)
 
-- PocketBase is the only backend.
-- PocketBase client is initialized in `app/plugins/pocketbase.ts` and injected globally as `$pb`.
-- All data fetching must go through `useApi()` composable (`app/composables/useApi.ts`), which exposes semantic modules: `api.athletes`, `api.games`, etc.
-- API modules live in `app/api/` — each module is a pure factory `createXxxApi(pb)`. Add new collections there.
-- Example: `const { athletes } = useApi()` → `athletes.getList()`, `athletes.getById()`, `athletes.getBySlug()`.
-- Type definitions for collections are located in `app/types/` (e.g. `athlete.ts`, `game.ts`).
-- Environment variable: `POCKETBASE_URL`
-  - Dev: `http://localhost:8090`
+- Django REST Framework is the only backend.
+- All data fetching must go through `useApi()` composable (`app/composables/useApi.ts`), which exposes semantic modules: `api.athletes`, `api.dygynGames`, etc.
+- API modules live in `app/api/` — each module is a pure factory `createXxxApi(baseUrl, lang)`. Add new collections there.
+- Example: `const { athletes } = useApi()` → `athletes.getList()`, `athletes.getBySlug()`.
+- Type definitions for collections are located in `app/types/` (e.g. `athlete.ts`, `dygynGames.ts`).
+- Environment variable: `API_URL`
+  - Dev: `http://localhost:8000`
   - Production: `https://api.sakha.games`
 
 ## Full Color Palette Reference

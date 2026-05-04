@@ -176,4 +176,4 @@ Depth is achieved only through **tonal layering**, never shadows.
 ---
 
 **Created:** April 2026  
-**For project:** SakhaGames (Nuxt 4 + PocketBase)
+**For project:** SakhaGames (Nuxt 4 + Django REST Framework)

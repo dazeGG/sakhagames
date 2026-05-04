@@ -1,13 +1,12 @@
 # SakhaGames Frontend
 
-Фронтенд для SakhaGames. Бэкенд находится в `../backend` и работает на PocketBase.
+Фронтенд для SakhaGames. Бэкенд находится в `../backend` и работает на Django REST Framework.
 
 ## Стек
 
 - Nuxt 4
 - Nuxt UI
 - Tailwind CSS
-- PocketBase JS SDK
 - TypeScript
 
 ## Настройка
@@ -16,10 +15,10 @@
 pnpm install
 ```
 
-Переменная подключения к PocketBase:
+Переменная подключения к API:
 
 ```bash
-POCKETBASE_URL=http://127.0.0.1:8090
+API_URL=http://127.0.0.1:8000
 ```
 
 ## Разработка
