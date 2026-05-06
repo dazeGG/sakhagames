@@ -1,8 +1,10 @@
 import { createAthletesApi } from "./athletes"
+import { createDisciplinesApi } from "./disciplines"
 import { createDygynGamesApi } from "./dygynGames"
 
 export const createApi = (baseUrl: string, lang = "ru") => ({
   athletes: createAthletesApi(baseUrl, lang),
+  disciplines: createDisciplinesApi(baseUrl, lang),
   dygynGames: createDygynGamesApi(baseUrl, lang),
 })
 

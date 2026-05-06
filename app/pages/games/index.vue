@@ -91,8 +91,8 @@ const tonalBg = (year: number) => {
   ].join(", ")
 }
 
-const loadedImages = ref(new Set<string>())
-const onImageLoad = (id: string) => {
+const loadedImages = ref(new Set<number>())
+const onImageLoad = (id: number) => {
   loadedImages.value = new Set([...loadedImages.value, id])
 }
 </script>
