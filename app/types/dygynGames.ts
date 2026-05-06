@@ -1,4 +1,5 @@
 import type { RecordId, RecordDefault } from "~/types"
+import type { Athlete } from "~/types/athlete"
 
 export type DygynGameStatus
   = | "completed"
@@ -28,9 +29,15 @@ export type DygynResultStatus
 
 export type SourceItem = {
   title: string
-  url?: string
-  type?: string
-  note?: string
+  url: string
+  publisher: string
+  date?: string
+}
+
+export type ResultDetail = {
+  type: string
+  format: string
+  value: string
 }
 
 export interface Discipline extends RecordDefault {
@@ -39,27 +46,28 @@ export interface Discipline extends RecordDefault {
   rules?: string
   scoring?: string
   unit?: string
-  validFromDate: string
-  validToDate: string
-  is_active?: boolean
   changeNote?: string
-  sources?: SourceItem[] | null
-  predecessor?: RecordId | null
+  validFromDate: string | null
+  validToDate: string | null
+  isActive?: boolean
+  sources?: SourceItem[]
+  predecessor: RecordId | null
+  record: RecordId | null
 }
 
 export interface DygynGame extends RecordDefault {
   year: number
   title: string
-  dateStart: string
-  dateEnd: string
+  dateStart: string | null
+  dateEnd: string | null
   location: string
   venue: string
   summary: string
   historicalNote: string
   status?: DygynGameStatus | ""
   cover: string
-  gallery?: unknown
-  sources?: unknown
+  gallery?: unknown[]
+  sources?: SourceItem[]
   isFeatured: boolean
   isPublished: boolean
 }
@@ -73,7 +81,6 @@ export interface DygynGameParticipant extends RecordDefault {
   placesSum: number
   status?: DygynParticipantStatus | ""
   note: string
-  expand?: Record<string, unknown>
 }
 
 export interface DygynGameEvent extends RecordDefault {
@@ -82,13 +89,12 @@ export interface DygynGameEvent extends RecordDefault {
   title: string
   sortOrder: number
   dayNumber: number
-  dateHeld: string
+  dateHeld: string | null
   status?: DygynEventStatus | ""
   rulesNote: string
   recordNote: string
-  sources?: unknown
-  media?: unknown
-  expand?: Record<string, unknown>
+  sources?: SourceItem[]
+  media?: unknown[]
 }
 
 export interface DygynGameResult extends RecordDefault {
@@ -98,33 +104,12 @@ export interface DygynGameResult extends RecordDefault {
   resultValue: string
   resultLabel: string
   status?: DygynResultStatus | ""
-  details?: unknown
+  details?: ResultDetail[]
   note: string
 }
 
-export interface ExpandedAthlete {
-  id: string
-  name: string
-  slug: string
-  bio: string
-  title: string
-  birthDate: string
-  birthPlace: string
-  club: string
-  photo: string
-  photos: string[]
-  achievements: Array<{ icon: string, text: string }>
-  socialLinks: unknown
-}
-
-export interface DisciplineCompact {
-  id: string
-  name: string
-  unit: string
-}
-
 export interface LocalizedDygynGame {
-  id: string
+  id: number
   year: number
   title: string
   summary: string
@@ -144,9 +129,9 @@ export interface LocalizedDygynGame {
 }
 
 export interface LocalizedDygynParticipant {
-  id: string
-  dygynGame: string
-  athlete: string
+  id: number
+  dygynGame: number
+  athlete: number
   bibNumber: number
   finalRank: number
   placesSum: number
@@ -156,14 +141,14 @@ export interface LocalizedDygynParticipant {
   created: string
   updated: string
   expand?: {
-    athlete?: ExpandedAthlete
+    athlete?: Athlete
   }
 }
 
 export interface LocalizedDygynEvent {
-  id: string
-  dygynGame: string
-  discipline: string
+  id: number
+  dygynGame: number
+  discipline: number
   dayNumber: number
   sortOrder: number
   dateHeld: string
@@ -176,25 +161,25 @@ export interface LocalizedDygynEvent {
   created: string
   updated: string
   expand?: {
-    discipline?: DisciplineCompact
+    discipline?: Discipline
   }
 }
 
 export interface LocalizedDygynResult {
-  id: string
-  event: string
-  participant: string
+  id: number
+  event: number
+  participant: number
   place: number
   resultValue: string
   resultLabel: string
   note: string
-  details: unknown
-  status: DygynResultStatus
+  details: ResultDetail[]
+  status: DygynResultStatus | ""
   created: string
   updated: string
 }
 
-export interface DygynGamePageResponse {
+export interface DygynGameArchive {
   game: LocalizedDygynGame
   participants: LocalizedDygynParticipant[]
   events: LocalizedDygynEvent[]

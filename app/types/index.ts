@@ -1,4 +1,4 @@
-export type RecordId = string
+export type RecordId = number
 
 export type FileName = string
 

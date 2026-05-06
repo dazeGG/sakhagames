@@ -1,6 +1,6 @@
 import type {
   DygynGame,
-  DygynGamePageResponse,
+  DygynGameArchive,
 } from "~/types/dygynGames"
 
 interface PaginatedResponse<T> {
@@ -20,7 +20,7 @@ export const createDygynGamesApi = (baseUrl: string, lang: string) => ({
   getList: async (page = 1, perPage = 10): Promise<GamesListResponse> => {
     const params = new URLSearchParams({ page: String(page), page_size: String(perPage) })
     const data = await $fetch<PaginatedResponse<DygynGame>>(
-      `${baseUrl}/dygyn-game-records/?${params}`,
+      `${baseUrl}/dygyn-games/?${params}`,
       { headers: { "SG-Language": lang } },
     )
     return {
@@ -30,7 +30,7 @@ export const createDygynGamesApi = (baseUrl: string, lang: string) => ({
     }
   },
 
-  getGamePage: async (year: number, signal?: AbortSignal): Promise<DygynGamePageResponse> => {
+  getGamePage: async (year: number, signal?: AbortSignal): Promise<DygynGameArchive> => {
     const response = await fetch(`${baseUrl}/dygyn-games/${year}/`, {
       headers: {
         "Content-Type": "application/json",
