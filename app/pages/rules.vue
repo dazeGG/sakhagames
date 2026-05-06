@@ -12,7 +12,7 @@ const { data } = await useAsyncData(
 useSeoMeta({ title: "Правила и дисциплины" })
 
 const disciplines = computed(() =>
-  (data.value?.items ?? []).filter(d => d.is_active !== false),
+  (data.value?.items ?? []).filter(d => d.isActive !== false),
 )
 
 const totalItems = computed(() => disciplines.value.length)
@@ -163,10 +163,10 @@ const hasSources = (d: Discipline): d is Discipline & { sources: SourceItem[] } 
                   {{ source.title }}
                 </span>
                 <p
-                  v-if="source.note"
+                  v-if="source.date"
                   class="font-sans text-[0.75rem] text-neutral-500 mt-1 mb-0"
                 >
-                  {{ source.note }}
+                  {{ source.date }}
                 </p>
               </div>
             </li>

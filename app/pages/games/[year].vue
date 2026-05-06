@@ -3,7 +3,7 @@ import type {
   DygynGameStatus,
   DygynEventStatus,
   DygynResultStatus,
-  DygynGamePageResponse,
+  DygynGameArchive,
   LocalizedDygynResult,
   LocalizedDygynParticipant,
 } from "~/types/dygynGames"
@@ -13,7 +13,7 @@ const { dygynGames: gamesApi } = useApi()
 
 const year = computed(() => Number(route.params.year))
 
-const { data: pageData } = await useAsyncData<DygynGamePageResponse>(
+const { data: pageData } = await useAsyncData<DygynGameArchive>(
   () => `dygyn-game-page-${route.params.year}`,
   () => gamesApi.getGamePage(year.value),
 )
@@ -96,7 +96,7 @@ const metaRows = computed(() => {
 })
 
 const participantsById = computed(() => {
-  const map = new Map<string, LocalizedDygynParticipant>()
+  const map = new Map<number, LocalizedDygynParticipant>()
   for (const p of pageData.value?.participants ?? []) {
     map.set(p.id, p)
   }
@@ -104,7 +104,7 @@ const participantsById = computed(() => {
 })
 
 const eventsWithResults = computed(() => {
-  const byEvent = new Map<string, LocalizedDygynResult[]>()
+  const byEvent = new Map<number, LocalizedDygynResult[]>()
   for (const r of pageData.value?.results ?? []) {
     const arr = byEvent.get(r.event) ?? []
     arr.push(r)
@@ -122,11 +122,11 @@ const allParticipantsSorted = computed(() =>
     .sort((a, b) => (a.finalRank ?? 99) - (b.finalRank ?? 99)),
 )
 
-const activeEventId = ref("")
+const activeEventId = ref<number | null>(null)
 
 watchEffect(() => {
   const first = eventsWithResults.value[0]
-  if (first && !activeEventId.value) {
+  if (first && activeEventId.value === null) {
     activeEventId.value = first.event.id
   }
 })
@@ -321,7 +321,7 @@ const getTeam = (result: LocalizedDygynResult) =>
           v-if="activeEventData.results.length"
           class="px-5 pt-4 pb-6"
         >
-          <div class="font-heading text-[0.4375rem] tracking-[0.14rem] font-semibold text-neutral-400 uppercase grid grid-cols-[1.75rem_1fr_3.5rem] gap-2 mb-3 pb-2 border-b border-neutral-200">
+          <div class="font-heading text-[0.4375rem] tracking-[0.14rem] font-semibold text-neutral-400 uppercase grid grid-cols-[1.75rem_1fr_5rem] gap-2 mb-3 pb-2 border-b border-neutral-200">
             <span>М</span>
             <span>Участник</span>
             <span class="text-right">Результат</span>
@@ -330,7 +330,7 @@ const getTeam = (result: LocalizedDygynResult) =>
             <div
               v-for="result in activeEventData.results"
               :key="result.id"
-              class="grid grid-cols-[1.75rem_1fr_3.5rem] gap-2 items-start"
+              class="grid grid-cols-[1.75rem_1fr_5rem] gap-2 items-start"
             >
               <span
                 class="font-serif-classic font-bold leading-none pt-0.5"
@@ -341,7 +341,7 @@ const getTeam = (result: LocalizedDygynResult) =>
               <div class="min-w-0">
                 <p
                   class="font-sans text-[0.875rem] truncate mb-0 leading-tight"
-                  :class="resultStatusColor[result.status ?? 'finished']"
+                  :class="resultStatusColor[(result.status || 'finished') as DygynResultStatus]"
                 >
                   {{ getAthleteName(result) }}
                 </p>
@@ -353,7 +353,7 @@ const getTeam = (result: LocalizedDygynResult) =>
                 </p>
               </div>
               <span class="font-mono text-[0.75rem] text-neutral-600 text-right truncate pt-0.5">
-                {{ result.resultLabel ?? "—" }}
+                {{ result.resultLabel || "—" }}
               </span>
             </div>
           </div>
@@ -417,10 +417,10 @@ const getTeam = (result: LocalizedDygynResult) =>
               {{ source.title }}
             </span>
             <p
-              v-if="source.note"
+              v-if="source.date"
               class="font-sans text-[0.75rem] text-neutral-500 mt-1 mb-0"
             >
-              {{ source.note }}
+              {{ source.date }}
             </p>
           </div>
         </li>
