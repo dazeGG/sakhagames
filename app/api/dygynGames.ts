@@ -3,6 +3,13 @@ import type {
   DygynGamePageResponse,
 } from "~/types/dygynGames"
 
+interface PaginatedResponse<T> {
+  count: number
+  next: string | null
+  previous: string | null
+  results: T[]
+}
+
 interface GamesListResponse {
   items: DygynGame[]
   totalItems: number
@@ -11,17 +18,15 @@ interface GamesListResponse {
 
 export const createDygynGamesApi = (baseUrl: string, lang: string) => ({
   getList: async (page = 1, perPage = 10): Promise<GamesListResponse> => {
-    const all = await $fetch<DygynGame[]>(`${baseUrl}/dygyn-game-records/`, {
-      headers: { "SG-Language": lang },
-    })
-    const sorted = [...all].sort((a, b) => b.year - a.year)
-    const totalItems = sorted.length
-    const totalPages = Math.ceil(totalItems / perPage)
-    const start = (page - 1) * perPage
+    const params = new URLSearchParams({ page: String(page), page_size: String(perPage) })
+    const data = await $fetch<PaginatedResponse<DygynGame>>(
+      `${baseUrl}/dygyn-game-records/?${params}`,
+      { headers: { "SG-Language": lang } },
+    )
     return {
-      items: sorted.slice(start, start + perPage),
-      totalItems,
-      totalPages,
+      items: data.results,
+      totalItems: data.count,
+      totalPages: Math.ceil(data.count / perPage),
     }
   },
 
